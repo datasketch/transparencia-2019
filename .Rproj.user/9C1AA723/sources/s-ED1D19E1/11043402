@@ -1,0 +1,29 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1554817833092.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "11043402",
+    "lastKnownWriteTime" : 8319606921308041298,
+    "last_content_update" : 1554817833092,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "E0B63202",
+        "caption" : "casos",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=casos&cache_key=E0B63202",
+        "displayedObservations" : "1779",
+        "environment" : "",
+        "object" : "casos",
+        "preview" : "0",
+        "totalObservations" : "1779",
+        "variables" : "57"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}
