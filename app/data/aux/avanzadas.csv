@@ -1,0 +1,23 @@
+base,variables_label,variables_id
+Hechos,Sector Afectado ,sector_afectado
+Hechos,Año Inicial ,ano_inicial_hecho
+Hechos,Año final ,ano_final_hecho
+Hechos,Tipo de Corrupción ,tipo_corrupcion
+Hechos,Naturaleza de Corrupción ,naturaleza_corrupcion
+Hechos,Delitos cometidos ,delito
+Hechos,Dinero en Juego ,dinero_en_juego
+Hechos,Dinero Apropiado,dinero_apropiado
+Hechos,Rango de Dinero ,rango_de_dinero
+Hechos,Derecho Vulnerado ,derecho_vulnerado
+Actores,Tipo de Participación ,tipo_de_participacion
+Actores,Institución ,institucion
+Actores,Cargo ,cargo
+Actores,Rama del Poder Público ,rama_del_poder_publico
+Actores,Autoridad Pública ,autoridad_publica
+Actores,Partido Político ,partido_politico
+Actores,Tipo de Investigación ,tipo_de_investigacion
+Actores,Etapa Procesal ,etapa_procesal
+Actores,Situación Judicial,situacion_judicial
+Actores,Entidad de Conocimiento ,entidad_de_conocimiento
+Actores,Detalle de la Sanción ,detalle_de_la_sancion
+Actores,Fecha del Historial ,fecha_del_historial

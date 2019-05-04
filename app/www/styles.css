@@ -1,0 +1,118 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway:400,700,900');
+
+*,
+*:before,
+*:after {
+	box-sizing: inherit;
+}
+
+
+html,
+body {
+	box-sizing: border-box;
+	font-family: 'Raleway', sans-serif;
+	height: 100%;
+	margin: 0;
+	width: 100%;
+}
+
+.panels {
+ display: grid;
+ grid-template-columns: 25% 50% 25%;
+}
+
+#basicos{
+ max-width: 95%;
+}
+
+.opciones_basicas,.opciones_avanzadas {
+ display: grid;
+ grid-gap: 10px; 
+}
+
+
+#Basico,#Avanzada {
+ background: transparent;
+ border: 1px solid;
+ color: #0a446b;
+ font-weight: 900;
+ margin-bottom: 5px;
+ max-width: 95%;
+ text-align: left;
+}
+
+#opts {
+ display: inline-block;
+ margin-right: 9px;
+}
+
+.active_opt {
+  transform: scale(1.2) rotate(90deg) !important; 
+}
+
+.preguntas_basicas {
+ border: 1px solid;
+ height: 290px;
+ margin-bottom: 17px;
+ overflow: overlay;
+}
+
+.needed {
+ margin-bottom: 9px;
+ max-width: 95%;
+ text-align: left;
+ white-space: normal;
+ word-wrap: break-word;
+}
+
+#opts_a {
+ display: inline-block;
+ margin-right: 9px;
+}
+
+.form-group,.shiny-input-container{
+ max-width: 90% !important;
+ text-align: left;
+ width: auto !important;
+ margin: 0px !important;
+}
+
+
+.buttons-group {
+ grid-gap: 0px !important; 
+ grid-template-columns: repeat(3, 1fr) !important;
+ padding: 0 !important;
+}
+
+.buttons-group .buttonStyle {
+    height: 70px !important;
+    width: 70px !important;
+}
+
+.buttons-group .buttonStyle .imgStyle {
+ width: 70px !important;
+ filter: none !important;
+}
+
+
+::-webkit-scrollbar
+{
+  width: 7px;
+}
+
+::-webkit-scrollbar-track
+{
+  background: #e2eaed;
+}
+
+::-webkit-scrollbar-thumb
+{
+  background: #0a446b;
+}
+
+::-webkit-scrollbar:focus {
+    overflow: scroll;
+    display:block;
+    background: #0a446b;
+}
+

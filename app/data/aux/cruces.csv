@@ -1,0 +1,31 @@
+plot,var_sel,org,var_label
+barras,sector_afectado,departamento,Departamento
+barras,sector_afectado,region,Región
+barras,sector_afectado,naturaleza_corrupcion,Naturaleza de Corrupción 
+barras,sector_afectado,tipo_corrupcion,Tipo de Corrupción 
+barras,sector_afectado,rango_de_dinero,Rango de Dinero 
+barras,sector_afectado,derecho_vulnerado,
+barras,naturaleza_corrupcion,departamento,Departamento
+barras,naturaleza_corrupcion,region,Región
+barras,naturaleza_corrupcion,sector_afectado,Sector Afectado 
+barras,naturaleza_corrupcion,tipo_corrupcion,Tipo de Corrupción 
+barras,naturaleza_corrupcion,rango_de_dinero,Rango de Dinero 
+barras,naturaleza_corrupcion,derecho_vulnerado,derecho_vulnerado
+barras,tipo_corrupcion,departamento,Departamento
+barras,tipo_corrupcion,region,Región
+barras,tipo_corrupcion,sector_afectado,Sector Afectado 
+barras,tipo_corrupcion,naturaleza_corrupcion,Naturaleza de Corrupción 
+barras,tipo_corrupcion,rango_de_dinero,Rango de Dinero 
+barras,tipo_corrupcion,derecho_vulnerado,derecho_vulnerado
+barras,rango_de_dinero,departamento,Departamento
+barras,rango_de_dinero,region,Región
+barras,rango_de_dinero,sector_afectado,Sector Afectado 
+barras,rango_de_dinero,naturaleza_corrupcion,Naturaleza de Corrupción 
+barras,rango_de_dinero,tipo_corrupcion,Tipo de Corrupción 
+barras,derecho_vulnerado,departamento,Departamento
+barras,derecho_vulnerado,region,Región
+barras,derecho_vulnerado,sector_afectado,Sector Afectado 
+barras,derecho_vulnerado,naturaleza_corrupcion,Naturaleza de Corrupción 
+barras,derecho_vulnerado,tipo_corrupcion,Tipo de Participación 
+lineas,,ano_inicial_hecho,Año inicial
+lineas,,ano_final_hecho,Año final
