@@ -38,37 +38,32 @@ shinyServer(function(input, output, session) {
     var_cho <- input$var_principal
     if (is.null(var_cho)) return()
 
-    sometimes <- data.frame(org = c('departamento', 'region', 'municipio'),
-                            var_label = c('Departamento', 'Region', 'Municipio'))
+    sometimes <- data.frame(org = c('none','departamento', 'region', 'municipio'),
+                            var_label = c(' ', 'Departamento', 'Region', 'Municipio'))
     
     if (viz_sel == "barras" | viz_sel == "barrash"){
       df <- cruces %>% filter(var_sel == var_cho)
       if (nrow(df) == 0) {
         l <- sometimes
       } else {
-        l <- df
+        l <- bind_rows(data.frame(org = c('none'), var_label = c(' ')),df)
       }
     } else if (viz_sel == "map") {
-      l <- sometimes
+      l <- sometimes[-1,]
     } else if (viz_sel == "lines") {
       l <- cruces %>% filter(plot == "lineas")
     } else {
       l <- NULL
     }
-    l
-    #setNames(c('e'), df$variables_label)
+    setNames(as.character(l$org), as.character(l$var_label))
   })
   
-  output$bla <- renderPrint({
-    outCross()
-  })
-  # 
-  # observe({
-  #   updateSelectInput(session, "var_principal",
-  #                     choices = outVar()
-  #   )})
-  # OJO QUEDA PENDIENTE EL CRUCE ENTRE VARIABLES DIFERENTE AL TERRITORIAL
- 
+
+  observe({
+    updateSelectInput(session, "var_cruce",
+                      choices = outCross()
+    )})
+  
   # Opciones avanzadas
   
   output$avanzadas <- renderUI({
@@ -93,8 +88,7 @@ shinyServer(function(input, output, session) {
     div(
       uiOutput('basicos'),
       uiOutput('avanzadas'),
-      uiOutput('vizOptions'),
-      verbatimTextOutput("bla")
+      uiOutput('vizOptions')
     )
   })
   

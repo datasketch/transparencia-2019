@@ -27,5 +27,5 @@ barras,derecho_vulnerado,region,Región
 barras,derecho_vulnerado,sector_afectado,Sector Afectado 
 barras,derecho_vulnerado,naturaleza_corrupcion,Naturaleza de Corrupción 
 barras,derecho_vulnerado,tipo_corrupcion,Tipo de Participación 
-lineas,,ano_inicial_hecho,Año inicial
-lineas,,ano_final_hecho,Año final
+lineas,,ano_inicial_hecho,Año Inicial Hecho
+lineas,,ano_final_hecho,Año Final Hecho
