@@ -148,21 +148,63 @@ shinyServer(function(input, output, session) {
   })
 
   
+
   output$viz_hgch <- renderHighchart({
     
     click_chart <- input$last_chart
     if (is.null(click_chart) | click_chart == 'map') return()
     click_chart <- gsub('lines', 'line',  click_chart)
+    
+    orientacion <- 'ver'
+    if (click_chart == 'barrash') orientacion <- 'hor'
+    
     click_chart <- gsub('barras|barrash', 'bar', click_chart)
     
     df <- data_viz()
+    colSc <- 'no'
+    if (click_chart == 'pie') colSc <- 'discrete'
+    
+    opts_viz <- list(
+      title = NULL,
+      subtitle = NULL,
+      caption = NULL,
+      horLabel = NULL,
+      verLabel = NULL,
+      labelWrap = 30,
+      colors = c("#fdb731"),
+      color_scale = colSc,
+      agg = "sum",
+      agg_text = NULL,
+      orientation = orientacion,
+      marks = c(".", ","),
+      nDigits = NULL,
+      dropNa = FALSE,
+      highlight_valueColor = '#F9B233',
+      percentage = FALSE,
+      highlight_value = NULL,
+      sort = "desc",
+      sliceN = 10,
+      showText = TRUE,
+      tooltip = list(headerFormat = NULL, pointFormat = NULL),
+      export = FALSE,
+      theme = NULL,
+      lang = 'es',
+      allow_point = TRUE,
+      cursor =  'pointer',
+      clickFunction = JS("function(event) {Shiny.onInputChange('hcClicked',  {id:event.point.category.name, timestamp: new Date().getTime()});}"),
+      graphType = "stacked",
+      labelWrapV = c(30, 30),
+      legend_position  = "center",
+      startAtZero = TRUE,
+      spline = FALSE
+    )
     
     typeDt <- 'Cat'
     if (ncol(df) != 1) typeDt <- 'CatCat'
     
     viz <- paste0('hgch_', click_chart, '_', typeDt)
     
-    do.call(viz, c(list(df)))
+    do.call(viz, c(list(df, opts = opts_viz)))
     
   })
   
