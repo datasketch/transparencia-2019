@@ -50,6 +50,16 @@ casos <- casos %>%
            group_by(id_caso) %>%
              summarise_each(funs(func_paste))
 
+casos <- casos %>%
+  map(function(z) {
+    d <- gsub("\\. NA|NA\\.|. NA|NA\\. |. NA|. NA", "", z)
+    d <- gsub(" No disponible|no disponible|No disponible|No aplica|\\. no aplica|no aplica|No Disponible|No Aplica|No Aplica\\.|No disponible\\.", "", d)
+    d <- gsub("\\.\\.|\\. \\.", ".", d)
+    d <- gsub("^\\.", "", d)
+    d <- trimws(gsub("NA", "", d))
+    d
+  }) %>% bind_rows()
+
 write_csv(casos, "app/data/clean/casos_agregadas_data.csv", na = "")
 
 
@@ -69,15 +79,6 @@ notas <- notas_casos %>%
             summarise_each(funs(func_paste))
 
 
-# casos <- casos %>% 
-#   map(function(z) {
-#     d <- gsub("\\. NA|NA\\.|. NA|NA\\. |. NA|. NA", "", z)
-#     d <- gsub(" No disponible|no disponible|No disponible|No aplica|\\. no aplica|no aplica|No Disponible|No Aplica|No Aplica\\.|No disponible\\.", "", d)
-#     d <- gsub("\\.\\.|\\. \\.", ".", d)
-#     d <- gsub("^\\.", "", d)
-#     d <- trimws(gsub("NA", "", d))
-#     d
-#   }) %>% bind_rows()
 # 
 # write_csv(casos, "app/data/clean/casos_agregadas_data.csv", na = "")
 # 

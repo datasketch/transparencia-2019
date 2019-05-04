@@ -10,8 +10,7 @@ shinyServer(function(input, output, session) {
     map(1:nrow(basicos), function(z){
      actionButton(inputId = basicos[z,]$id, label = basicos[z,]$preguntas, class = "needed")
      })
-    )
-    )
+    ))
   })
  
   
@@ -21,7 +20,17 @@ shinyServer(function(input, output, session) {
   outVar <- reactive({
     data_sel <- input$base_sel
     if (is.null(data_sel)) return()
-    df <- avanzados %>% filter(base == data_sel) 
+    
+    chart <- input$last_chart
+    
+    df <- avanzados %>% filter(base == data_sel)
+    
+    if(chart != "lines") {
+      df <- df 
+    } else {
+      df <- df %>% filter(variables_id != c('ano_final_hecho', 'ano_inicial_hecho'))
+    }   
+    
     setNames(df$variables_id, df$variables_label)
   })
   
@@ -83,6 +92,85 @@ shinyServer(function(input, output, session) {
   })
   
   
+  data_viz <- reactive({
+    l_o <- input$last_option 
+    if (is.null(l_o)) l_o <- "Basico"
+    
+    if (l_o == "Basico") {
+      q_sel <- input$last_click
+      if (is.null(q_sel)) q_sel <- 'q1'
+      dt_bs <- basicos %>% filter(id == q_sel)
+      
+      var_sel <- dt_bs$variable
+      
+      if (var_sel == 'delito') var_sel <- paste0('delito_', 1:7)
+      if (input$last_chart == "map" & q_sel != 'q3') var_sel <- c(var_sel, 'departamento')
+      
+      if (dt_bs$base == 'notas') {
+        dt <- notas
+      } else if (dt_bs$base == 'casos') {
+        dt <- casos[var_sel]
+        if (dt_bs$variable == 'delito') {
+          dt <- dt %>% gather("delitoxx", "delito", delito_1:delito_7) %>% select(-delitoxx)
+        }
+      } else {
+        dt <- actores %>% filter(actores$tipo_de_participacion == 'Actor involucrado')
+        dt <- dt[var_sel]
+      }
+    } else {
+      base <- input$base_sel
+      if (is.null(base)) return()
+      var_prim <- input$var_principal
+      if (is.null(var_prim)) return()
+      var_cruce <- input$var_cruce
+      if (is.null(var_cruce)) return()
+      click_chart <- input$last_chart
+      
+      if (click_chart == "pie" | click_chart == "treemap") var_cruce <- "none"
+      
+     
+      if (base == "Hechos") {
+        if (var_cruce == "none"){
+          dt <- casos %>% select_(var_prim)
+        } else {
+          dt <- casos %>% select_(var_prim, var_cruce)
+        }
+        
+      } else {
+        if (var_cruce == "none" | is.null(var_cruce)){
+          dt <- actores %>% select_(var_prim)
+        } else {
+          dt <- actores %>% select_(var_prim, var_cruce)
+        }
+      }
+    }
+    dt
+  })
+
+  
+  output$viz_hgch <- renderHighchart({
+    
+    click_chart <- input$last_chart
+    if (is.null(click_chart) | click_chart == 'map') return()
+    click_chart <- gsub('lines', 'line',  click_chart)
+    click_chart <- gsub('barras|barrash', 'bar', click_chart)
+    
+    df <- data_viz()
+    
+    typeDt <- 'Cat'
+    if (ncol(df) != 1) typeDt <- 'CatCat'
+    
+    viz <- paste0('hgch_', click_chart, '_', typeDt)
+    
+    do.call(viz, c(list(df)))
+    
+  })
+  
+  
+  output$lala <- renderPrint({
+    data_viz()
+  })
+  
   # Salida Panel Uno
   output$panel_1 <- renderUI({
     div(
@@ -93,8 +181,18 @@ shinyServer(function(input, output, session) {
   })
   
   
+  # Salidad Panel Dos
+  
+  output$panel_2 <- renderUI({
+    div(
+    HTML("VISUALIZACIÓN"),  
+    highchartOutput('viz_hgch')#,
+    #verbatimTextOutput("lala")
+    )
+  })
   
   
+  #############
   data_basic <- reactive({
     q_i <- input$last_click
     if (is.null(q_i)) q_i <- "q1"

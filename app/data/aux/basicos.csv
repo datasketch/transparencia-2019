@@ -2,7 +2,7 @@ id,preguntas,base,variable,filtro,titulos
 q1,¿Cuántos hechos de corrupción han sido investigados y reportados por la prensa?,notas,medio,no,Hechos de corrupción investigados y reportados por la prensa en Colombia (2016-2018)
 q2,¿Cuál es el tipo de corrupción más recurrente en los hechos investigados y reportados por la prensa?,casos,tipo_corrupcion,no,Hechos de corrupción investigados y reportados por la prensa en Colombia según tipo 
 q3,¿Donde se encuentran los hechos de corrupción en Colombia?,casos,departamento,no,Hechos de corrupción investigados y reportados por la prensa en Colombia según departamento
-q4,¿Cuáles han sido los sectores más afectados por la corrupción?,casos,sector_2,no,Hechos de corrupción investigados y reportados por la prensa en Colombia según sectores afectados
+q4,¿Cuáles han sido los sectores más afectados por la corrupción?,casos,sector_afectado,no,Hechos de corrupción investigados y reportados por la prensa en Colombia según sectores afectados
 q5,¿Cuáles han sido los ámbitos de la Gestión Pública más afectados por la corrupción? ,casos,naturaleza_corrupcion,no,Hechos de corrupción investigados y reportados por la prensa en Colombia según ambitos de la gestión pública 
 q6,¿Cuánto dinero hay en juego con la corrupción?,casos,rango_de_dinero,no,Hechos de corrupción investigados y reportados por la prensa en Colombia según rangos de dinero en juego
 q7,¿Cuáles son los derechos humanos mayormente vulnerados por los hechos de corrupción?,casos,derecho_vulnerado,no,Hechos de corrupción investigados y reportados por la prensa en Colombia según tipo de derecho vulnerado
