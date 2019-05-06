@@ -1,0 +1,126 @@
+%%%%%%%%%%%%%%%%%%%%%%%% ejbi.sty %%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% DO NOT MODIFY THIS FILE !!!
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%% Packages
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{fancyhdr,graphics,graphicx,color,xcolor,makeidx,setspace,html,htmllist}
+
+%\usepackage{latexsym,ifthen}
+%\usepackage{stfloats} % Commands to control the presentation of floats
+%\usepackage{dblfloatfix}  % Fixes for twocolumn floats
+\usepackage[small]{caption}
+
+% fonts
+
+%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%% Page parametres
+
+\addtolength{\textwidth}{2cm}
+\addtolength{\textheight}{3.5cm}
+\addtolength{\voffset}{-0.5in}
+%\addtolength{\hoffset}{-0.5cm}
+\addtolength{\oddsidemargin}{-0.1cm}
+\addtolength{\evensidemargin}{-1.9cm}
+
+\setlength{\headwidth}{1.04\textwidth}%
+
+%\def\baselinestretch{1.5}
+
+%\addtolength{\marginparsep}{-0.3cm}
+%\addtolength{\marginparwidth}{-0.3cm}
+%\addtolength{\headwidth}{-0.5cm}
+
+%%%%%%%%%%%%%%%%%%%%%% Colors
+
+%\usepackage[usenames,dvipsnames]{color}
+\definecolor{light-gray}{gray}{0.9}
+\definecolor{tmm}{HTML}{0095D4}
+\definecolor{svm}{HTML}{6D6E71}
+\definecolor{sub}{HTML}{ECA533}
+\definecolor{colfich}{HTML}{0095D4}
+\definecolor{colT}{HTML}{3C3C3B}
+%%%%%%%%%%%%%%%%%%%%%% Titles, subtitles,... 
+
+\makeatletter
+  \renewcommand{\section}{\@startsection{section}{1}{0mm}
+  {\baselineskip}%
+  {\baselineskip}{\normalfont\Large\sffamily\bfseries\raggedright\textcolor{tmm}}}%
+  \renewcommand{\subsection}{\@startsection{subsection}{1}{0mm}
+  {\baselineskip}%
+  {\baselineskip}{\normalfont\large\sffamily\bfseries\raggedright\textcolor{tmm}}}%
+  \renewcommand{\subsubsection}{\@startsection{subsubsection}{1}{0mm}
+  {\baselineskip}%
+  {\baselineskip}{\normalfont\normalsize\sffamily\bfseries\raggedright\textcolor{tmm}}}%
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%%%% Header, footer
+
+\renewcommand{\headrulewidth}{0pt} % line width in the header is 0pt
+
+
+\cfoot{} \sloppy \raggedbottom
+
+\pagestyle{fancy}
+
+%%%%%%%%%%%%%%%%%%%% Definition of the first page
+
+
+
+\newenvironment{ejbi-title}{\color{tmm}\LARGE\sffamily\bfseries}
+
+\newenvironment{ejbi-subtitle}{\color{sub}\LARGE\sffamily}
+
+\newenvironment{ejbi-abstr}{\color{svm}\small\sffamily}
+
+\newenvironment{ejbi-aut}{\small\sffamily\bfseries}
+
+\newenvironment{ejbi-aff}{\small\sffamily}
+
+
+\newenvironment{ejbi-colone}{\color{colfich}\small\sffamily\bfseries}
+
+\newenvironment{ejbi-coltwo}{\color{colT}\small\sffamily}
+
+\newenvironment{ejbi-sizdin}{\color{colfich}\Huge\sffamily\bfseries}
+
+
+%%%%%%%%%%%%%%%%%%%%%% Environment for figures and tables
+
+% Environment for figures - picture is adjusted to 90% of the textwidth and bordered
+\newlength{\figwid}
+\setlength{\figwid}{0.9\textwidth}
+
+\newenvironment{ejbi-figure}[2][!ht]{
+  \begin{figure*}[#1]
+    %\htmlimage{notransparent}
+    %\htmlborder{3}
+    \centering
+    \fbox{\includegraphics[clip, width=\figwid]{pic/#2.png}}
+}{\end{figure*}}
+
+
+
+
+\newcommand{\titlepicture}[2][]{%
+\begin{center}
+    \includegraphics[#1]{#2}\par\medskip
+\end{center}
+  }
+
+\newcommand{\specialcell}[2][c]{%
+  \begin{tabular}[#1]{@{}l@{}}#2\end{tabular}}
+
+\newcommand{\colrul}{\arrayrulecolor{colfich}\hline \\ \\}
+
+\newcommand{\chaptocfont}{\helveticabold}
+
+%%%%%%%%%%%%%%%%%%%%%%%% end of file %%%%%%%%%%%%%%%%%%%%%%%%%
+
+

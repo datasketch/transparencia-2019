@@ -1,0 +1,31 @@
+---
+params:
+output:
+  pdf_document:
+    template: default.tex
+    keep_tex: true
+title: "`r params$title`"
+subtitle: "`r params$subtitle`"
+abstract: "`r params$abstract`"
+id : "`r params$id`"
+lugar: "`r params$lugar`"
+inicio: "`r params$inicio`"
+actor: "`r params$actor`"
+tipo: "`r params$tipo`"
+delito: "`r params$delito`"
+sector: "`r params$sector`"
+entidad: "`r params$entidad`"
+estado: "`r params$estado`"
+actualizacion: "`r params$actualizacion`"
+---
+
+\vspace{0.5cm}
+
+```{r include=FALSE}
+library(geomagic)
+```
+
+
+```{r echo=FALSE, message='hide', fig.align='center',out.width = '150px', out.height = '150px', warning=FALSE, cache=FALSE, comment=NA, results='hide'}
+map_c(id)
+```

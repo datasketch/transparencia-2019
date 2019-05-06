@@ -1,0 +1,217 @@
+\documentclass[letterpaper]{article} 
+
+% \documentclass[$if(fontsize)$$fontsize$,$endif$$if(lang)$$lang$,$endif$$if(papersize)$$papersize$,$endif$$for(classoption)$$classoption$$sep$,$endfor$]{$documentclass$}
+
+
+
+\usepackage{geometry}
+\geometry{letterpaper, top=3.5cm, left=2cm, right=3.5cm, bottom=1.0cm}
+
+\usepackage[compact]{titlesec}
+\usepackage[document]{ragged2e}
+\usepackage{multirow}
+\usepackage{colortbl}
+
+$if(fontfamily)$
+  \usepackage[$for(fontfamilyoptions)$$fontfamilyoptions$$sep$,$endfor$]{$fontfamily$}
+$else$
+    \usepackage{lmodern}
+$endif$
+  $if(linestretch)$
+  \usepackage{setspace}
+\setstretch{$linestretch$}
+$endif$
+  \usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+\usepackage[$if(fontenc)$$fontenc$$else$T1$endif$]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\usepackage{color}
+
+
+% pandoc syntax highlighting
+$if(highlighting-macros)$
+  $highlighting-macros$
+  $endif$
+  
+  $if(tables)$
+  \usepackage{longtable,booktabs}
+% Fix footnotes in tables (requires footnote package)
+\IfFileExists{footnote.sty}{\usepackage{footnote}\makesavenoteenv{long table}}{}
+$endif$
+  
+% graphix
+\usepackage{graphicx}
+\setkeys{Gin}{width=\linewidth,totalheight=\textheight,keepaspectratio}
+
+% booktabs
+\usepackage{booktabs}
+
+% float images
+\usepackage{wrapfig}
+
+\usepackage{array}
+
+
+\usepackage[scaled]{helvet}
+\renewcommand\familydefault{\sfdefault} 
+\usepackage[T1]{fontenc}
+
+
+\renewcommand{\arraystretch}{0}
+\usepackage{ejbi}
+
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\includegraphics[width=50mm]{logo.png}}
+
+% \pagestyle{fancy}
+% \fancyhf{}
+% \fancyhead[R]{\includegraphics[width=50mm]{logo.png}}
+% \fancyfoot[R]{hola}
+% % 
+% % \setlength{\headheight}{10.50mm}
+% \pagestyle{fancy}
+
+\begin{document}
+
+
+
+\begin{table}[h!]
+ \setlength{\tabcolsep}{0pt}
+\def\arraystretch{0}
+  \begin{tabular}{m{4cm}m{12cm}}
+
+    &
+    \vspace{10pt} 
+
+        $if(title)$
+        \begin{center}
+        \begin{ejbi-title}
+        $title$
+        \end{ejbi-title}
+        \end{center}
+        %\bigskip
+        $endif$ 
+        $if(subtitle)$
+      \begin{center}
+      \begin{ejbi-subtitle}
+      $subtitle$
+      \end{ejbi-subtitle}
+      \end{center}
+      %}
+      %\bigskip
+      $endif$ 
+  \end{tabular}
+%  \egroup
+\end{table}
+
+
+$if(abstract)$
+%\begin{abstract}
+\color{colT}{\justify{$abstract$}}
+%\end{abstract}
+$endif$
+
+
+$body$
+  
+
+$for(include-after)$
+$include-after$
+$endfor$
+  
+\vspace{0.5cm}
+
+\begin{minipage}[t]{0.45\textwidth}%
+  
+\begin{tabular}{m{3.4cm}m{3.6cm}}
+ \begin{ejbi-colone}LUGAR DEL HECHO:\end{ejbi-colone}& 
+ $if(lugar)$ \begin{ejbi-coltwo} $lugar$ \end{ejbi-coltwo}$endif$\\ 
+ \colrul 
+ \addlinespace
+ \begin{ejbi-colone}FECHA DE INICIO:\end{ejbi-colone} &
+ $if(inicio)$ \begin{ejbi-coltwo} $inicio$ \end{ejbi-coltwo} $endif$  \\
+ \colrul 
+ \addlinespace
+ \specialcell[]{\begin{ejbi-colone}ACTOR O ENTIDAD\end{ejbi-colone} \\
+ \addlinespace
+ \begin{ejbi-colone}INVOLUCRADO: \end{ejbi-colone}}&
+ $if(actor)$ \begin{ejbi-coltwo} $actor$ \end{ejbi-coltwo}$endif$ \\ 
+\addlinespace\colrul
+ \addlinespace
+ \specialcell[]{\begin{ejbi-colone}TIPO DE \end{ejbi-colone}\\ 
+ \begin{ejbi-colone}CORRUPCIÓN:\end{ejbi-colone}}&
+ $if(tipo)$ \begin{ejbi-coltwo} $tipo$ \end{ejbi-coltwo}$endif$ \\
+ \addlinespace \colrul
+ \end{tabular}
+\end{minipage}%
+\qquad{\color{colfich}\vrule}\qquad
+\begin{tabular}{@{}l@{}}
+
+\begin{tabular}{m{3.6cm}m{3.6cm}}
+$if(delito)$\begin{ejbi-colone}DELITO\end{ejbi-colone} &
+ \begin{ejbi-coltwo}$delito$\end{ejbi-coltwo}$endif$\\ 
+\colrul
+\addlinespace
+\begin{ejbi-colone}SECTOR AFECTADO\end{ejbi-colone} &
+ $if(sector)$\begin{ejbi-colone}$sector$\end{ejbi-colone}$endif$\\ 
+\colrul
+\addlinespace
+\multicolumn{1}{c !{\color{colfich}\vline}}{{\begin{tabular}{@{}c@{}}
+ \\
+ \\
+ \begin{ejbi-colone}ENTIDAD DE\end{ejbi-colone}\\\addlinespace \begin{ejbi-colone}CONOCIMIENTO:\end{ejbi-colone}\end{tabular} }} & 
+ \multicolumn{1}{c}{\begin{ejbi-colone}ESTADO JUDICIAL:\end{ejbi-colone}} 
+ \\
+ \multicolumn{1}{c !{\color{colfich}\vline}}{{$if(entidad)$\begin{ejbi-coltwo} \parbox[t]{3.4cm}{\begin{center}$entidad$\end{center}}\end{ejbi-coltwo}$endif$}}  & \multicolumn{1}{c}{$if(estado)$\begin{ejbi-coltwo}\parbox[t]{3.4cm}{\begin{center} $estado$\end{center}} \end{ejbi-coltwo}$endif$} \\ \arrayrulecolor{colfich}\hline
+\end{tabular}
+\end{tabular}
+
+\vspace{1cm}
+
+\begin{flushright}
+ $if(actualizacion)$\textit{Última actualización $actualizacion$} $endif$
+\end{flushright}
+
+\end{document}
+
+
+
+
+% 
+% \begin{table}[h]
+% \renewcommand\arraystretch{0.5}
+% \centering
+% \begin{tabular}{m{4cm}m{4cm}}
+% \begin{ejbi-colone} LUGAR DEL HECHO: \end{ejbi-colone}& 
+% $if(lugar)$ \begin{ejbi-coltwo} $lugar$ \end{ejbi-coltwo}$endif$\\ 
+% \colrul 
+% $if(inicio)$ \begin{ejbi-coltwo} $inicio$ \end{ejbi-coltwo} $endif$ & \begin{ejbi-coltwo} FECHA DE INICIO \end{ejbi-coltwo} \\
+% \colrul 
+% \specialcell[]{\begin{ejbi-colone}ACTOR O ENTIDAD \end{ejbi-colone} \\
+% \begin{ejbi-colone} IMPLICADA: \end{ejbi-colone}} &
+% $if(actor)$ \begin{ejbi-coltwo} $actor$ \end{ejbi-coltwo}$endif$ \\ 
+% \addlinespace\colrul
+% \specialcell[]{\begin{ejbi-colone}TIPO DE \end{ejbi-colone}\\ 
+% \begin{ejbi-colone}CORRUPCIÓN\end{ejbi-colone}}&
+% $if(tipo)$ \begin{ejbi-coltwo} $tipo$ \end{ejbi-coltwo}$endif$ \\
+% \addlinespace \colrul
+% \begin{ejbi-colone}DELITO\end{ejbi-colone} &
+% $if(delito)$\begin{ejbi-coltwo}$delito$\end{ejbi-coltwo}$endif$\\ 
+% \colrul
+% \multicolumn{2}{l}{\begin{tabular}[x]{@{}l@{}}\begin{ejbi-coltwo}DINERO \end{ejbi-coltwo}\\ \begin{ejbi-coltwo}EN JUEGO:\end{ejbi-coltwo}\end{tabular} $if(dinero)$\begin{ejbi-sizdin}$dinero$\end{ejbi-sizdin}$endif$} \\ 
+% \addlinespace \arrayrulecolor{colfich}\hline
+% \multicolumn{1}{c !{\color{colfich}\vline}}{{\begin{tabular}[x]{@{}c@{}} 
+% \\
+% \\
+% \begin{ejbi-colone}ENTIDAD DE\end{ejbi-colone}\\\begin{ejbi-colone}CONOCIMIENTO:\end{ejbi-colone}\end{tabular} }} & 
+% \multicolumn{1}{c}{\begin{ejbi-colone}ESTADO JUDICIAL:\end{ejbi-colone}} 
+% \\
+% \multicolumn{1}{c !{\color{colfich}\vline}}{{$if(entidad)$\begin{ejbi-coltwo} \parbox[t]{4cm}{\begin{center}$entidad$\end{center}}\end{ejbi-coltwo}$endif$}}  & \multicolumn{1}{c}{$if(estado)$\begin{ejbi-coltwo}\parbox[t]{4cm}{\begin{center} $estado$\end{center}} \end{ejbi-coltwo}$endif$} \\ \arrayrulecolor{colfich}\hline
+%         \end{tabular}
+%     \end{table}

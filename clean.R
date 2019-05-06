@@ -12,6 +12,20 @@ casos <- casos[c(-1,-2),]
 names(casos) <- trimws(casos[1,])
 casos <- casos[-1,]
 
+
+casos <- casos %>% unite("Delito", `Delito 1`:`Delito 7`, remove = F, sep = ". ")
+casos$Delito <- trimws(gsub("NA\\.|NA", "", casos$Delito))
+
+
+casos$new <- ifelse(casos$`Situación Judicial` == "No Aplica" | 
+                      casos$`Situación Judicial` == "Otros" |
+                      casos$`Situación Judicial` == "Absuelto" |
+                      casos$`Situación Judicial` == "Investigado" |
+                      casos$`Situación Judicial` == "No Disponible", NA, casos$Actor)
+
+
+
+
 names(casos) <- gsub("#", "Número de ", names(casos))
 names(casos)[names(casos) == "Sector_2"] <- "Sector Afectado"                     
                   
@@ -34,6 +48,7 @@ dic_casos$ctype <- getCtypes(casos)
 casos <- map_df(casos, trimws)
 
 
+
 casos <- casos %>% 
   map(function(z) {
     d <- gsub("No aplica|no aplica", "No Aplica", z)
@@ -45,6 +60,7 @@ write_csv(casos, "app/data/clean/casos_all_data.csv", na = "")
 write_csv(dic_casos, "app/data/clean/casos_all_dic.csv",  na = "")
 
 func_paste <- function(x) paste(unique(x), collapse = '. ')
+
 
 casos <- casos %>%
            group_by(id_caso) %>%

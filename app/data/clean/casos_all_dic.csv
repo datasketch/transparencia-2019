@@ -47,6 +47,7 @@ subcategoria_2_actor_indivual,Subcategoría 2 actor indivual,Cat
 tipo_de_actor_colectivo,Tipo de actor colectivo,Cat
 subcategoria_1_actor_colectivo,Subcategoría 1 actor colectivo,Cat
 subcategoria_2_actor_colectivo,Subcategoría 2 actor colectivo,Cat
+delito,Delito,Cat
 delito_1,Delito 1,Cat
 delito_2,Delito 2,Cat
 delito_3,Delito 3,Cat
@@ -64,3 +65,4 @@ periodo_2,Periodo 2,Cat
 rama_del_poder_publico,Rama del poder Público,Cat
 autoridad_publica,Autoridad Pública,Cat
 partido_politico,Partido Político,Cat
+new,new,Cat

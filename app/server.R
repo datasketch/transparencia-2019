@@ -262,10 +262,10 @@ shinyServer(function(input, output, session) {
   })
   
   output$lala <- renderPrint({
-    data_ficha() 
+    data_viz() 
   })
   
-  output$fichas <- renderUI({
+  output$ficha_peque <- renderUI({
     info <- data_ficha()
     txt <- HTML("<img src='click/click.svg' style='width: 50px; display:block;'/> Haz click en la gráfica </br>
                   para ver los hechos de </br> corrupción relacionados")
@@ -286,9 +286,78 @@ shinyServer(function(input, output, session) {
     txt
   })
   
+  output$map_d <- renderPlot({
+    id <- input$last_case
+    if(is.null(id)) return()
+    map_c(id)
+    
+  })
+  
+  
+  fichaInfo <- reactive({
+    id <- input$last_case
+    if(is.null(id)) return()
+    getFicha(id)
+  })
+  
+  output$ficha <- renderUI({
+    #list(
+    fichaInfo()#,
+    #br(),
+    #downloadButton('descarga_ficha', 'Descargar')
+    #)
+  })
+  
+  observeEvent(input$last_case, {
+    showModal(modalDialog(
+      title = '',
+      easyClose = TRUE,
+      footer = modalButton("Cerrar"), 
+      uiOutput('ficha'), 
+      br()
+    )
+    )
+  })
   
   
   
+  output$descarga_ficha <-
+    downloadHandler(
+      "results_from_shiny.pdf",
+      content =
+        function(file)
+        {
+          id <- input$last_case
+          caso_i <- caso(id)
+          params <- list(
+            id = id,
+            title =  gsub("\"","'",caso_i$`nombre_hecho_de_corrupcion_(publico)`),
+            subtitle =  gsub("\"","'",caso_i$`subtitulo_hecho_de_corrupcion_(publico)`),
+            mapc = map_c(id),
+            abstract =  gsub("\"","'",caso_i$hecho_de_corrupcion),
+            lugar = paste0(toupper(caso_i$departamento), ifelse(is.na(caso_i$municipio), '', paste0(' - ', toupper(caso_i$municipio)))),
+            inicio = ifelse(is.na(caso_i$ano_inicial_hecho), 'No disponible', caso_i$ano_inicial_hecho),
+            actor = ifelse(is.na(caso_i$new), 'No disponible', caso_i$new),
+            tipo =  ifelse(is.na(caso_i$tipo_corrupcion), 'No disponible', caso_i$tipo_corrupcion),
+            delito = ifelse(is.na(caso_i$delito), '', caso_i$delito),
+            sector = toupper(caso_i$sector),
+            # dinero =  as.character(ifelse(is.na(caso_i$dinero_juego), 'No disponible', paste0(' $',  format(caso_i$dinero_juego, nsmall= 0, big.mark=",")))),
+            entidad = ifelse(is.na(caso_i$institucion), '', caso_i$subcategoria_1_actor_indivual),
+            estado = ifelse(is.na(caso_i$situacion_judicial), '', caso_i$situacion_judicial),
+            actualizacion = ifelse(is.na(caso_i$fecha_del_historial), '', as.character(caso_i$fecha_del_historial))
+          )
+          rmarkdown::render("temp_latex/untitle.Rmd",
+                            #output_format = pdf_document(template="default.tex"),
+                            params = params,
+                            output_file = "built_report.pdf")
+          
+          readBin(con = "temp_latex/built_report.pdf",
+                  what = "raw",
+                  n = file.info("temp_latex/built_report.pdf")[, "size"]) %>%
+            writeBin(con = file)
+        },
+      contentType = 'temp_latex/built_report.pdf'
+    )
   # Salida Panel Uno
   output$panel_1 <- renderUI({
     div(
@@ -312,7 +381,7 @@ shinyServer(function(input, output, session) {
   # Salida Panel Tres
   
   output$panel_3 <- renderUI({
-    uiOutput("fichas")
+    uiOutput("ficha_peque")
   })
 
   
