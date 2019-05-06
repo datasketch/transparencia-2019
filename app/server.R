@@ -92,7 +92,7 @@ shinyServer(function(input, output, session) {
   # Gráficos
   
   output$vizOptions <- renderUI({
-    charts <- c("barras", "barrash" ,"treemap", "map", "pie", "lines")
+    charts <- c("barrash", "barras" ,"treemap", "map", "pie", "lines")
     buttonImage(id = "last_chart", charts, charts, file = "icons/", format = "svg", classImg = "imgStyle")
   })
   
@@ -207,7 +207,7 @@ shinyServer(function(input, output, session) {
       percentage = FALSE,
       highlight_value = NULL,
       sort = "desc",
-      sliceN = 10,
+      sliceN = 30,
       showText = TRUE,
       tooltip = list(headerFormat = NULL, pointFormat = NULL),
       export = FALSE,
@@ -267,8 +267,8 @@ shinyServer(function(input, output, session) {
   
   output$ficha_peque <- renderUI({
     info <- data_ficha()
-    txt <- HTML("<img src='click/click.svg' style='width: 50px; display:block;'/> Haz click en la gráfica </br>
-                  para ver los hechos de </br> corrupción relacionados")
+    txt <- HTML("<div class = 'indicacion'><img src='click/click.svg' style='width: 50px; display:block;margin-left: 40%;'/> Haz click en la gráfica </br>
+                  para ver los hechos de </br> corrupción relacionados</div>")
     
     if (is.null(info)) return(txt)
     if(nrow(info) == 0) txt <- txt
@@ -277,8 +277,9 @@ shinyServer(function(input, output, session) {
     filas <- nrow(info)
     txt <- map(1:filas, function(x){
       div(class = "ficha",
-          info$`nombre_hecho_de_corrupcion_(publico)`[x],
-          info$`subtitulo_hecho_de_corrupcion_(publico)`[x],
+          div(class = "cont_info",
+          HTML(paste0('<div class = "title_ficha">',info$`nombre_hecho_de_corrupcion_(publico)`[x], '</div>')),
+          HTML(paste0('<div class = "sub_ficha">',info$`subtitulo_hecho_de_corrupcion_(publico)`[x], '</div>'))),
           tags$button(id = info$id_caso[x], class = "click_ficha",  "Ver más")
           )
     })
@@ -372,7 +373,7 @@ shinyServer(function(input, output, session) {
   
   output$panel_2 <- renderUI({
     div(class = "viz_out", style = "height: 100%;",
-    HTML("VISUALIZACIÓN"),  
+    HTML("<div class = 'title_panel'>VISUALIZACIÓN</div>"),  
     highchartOutput('viz_hgch',height = 570),
     verbatimTextOutput("lala")
     )
@@ -381,7 +382,12 @@ shinyServer(function(input, output, session) {
   # Salida Panel Tres
   
   output$panel_3 <- renderUI({
+    div(class = "tj_out",
+        HTML("<div class = 'title_panel'>HECHOS</div>"), 
+        div(class = "content_ficha_mini",
     uiOutput("ficha_peque")
+        )
+    )
   })
 
   

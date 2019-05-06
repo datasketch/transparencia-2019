@@ -14,6 +14,6 @@ $(document).on('click', '.click_ficha', function () {
 $(document).on('click', '.needed', function () {
 var isActive = document.querySelector('.needed.active');
  if (isActive) {
-    isActive.classList.remove('active')
+    isActive.classList.remove('active');
   }
 });
