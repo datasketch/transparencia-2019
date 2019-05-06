@@ -65,6 +65,7 @@ body {
  word-wrap: break-word;
 }
 
+
 #opts_a {
  display: inline-block;
  margin-right: 9px;
@@ -85,14 +86,15 @@ body {
 }
 
 .buttons-group .buttonStyle {
-    height: 70px !important;
-    width: 70px !important;
+ height: 70px !important;
+ width: 70px !important;
 }
 
 .buttons-group .buttonStyle .imgStyle {
  width: 70px !important;
  filter: none !important;
 }
+
 
 
 ::-webkit-scrollbar
@@ -115,4 +117,5 @@ body {
     display:block;
     background: #0a446b;
 }
+
 

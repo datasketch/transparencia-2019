@@ -3,13 +3,18 @@ shinyServer(function(input, output, session) {
   # Opciones Básicas
   
   output$basicos <- renderUI({
+    
+    l <- map(1:nrow(basicos), function(z){
+      actionButton(inputId = basicos[z,]$id, label = basicos[z,]$preguntas, class = "needed")
+    })
+    l[[1]] <- gsub("needed", "needed active", l[[1]])
+    l[[1]] <- HTML(paste0(paste(l[[1]], collapse = '')))
+    
     div(class = "opciones_basicas",
     tags$button(id = "Basico", class = "click_option",  HTML("<div id='opts' class = 'active_opt'>&gt;</div> OPCIONES BÁSICAS")),
     HTML("Visualizar"),
     div(class = "preguntas_basicas",
-    map(1:nrow(basicos), function(z){
-     actionButton(inputId = basicos[z,]$id, label = basicos[z,]$preguntas, class = "needed")
-     })
+    l
     ))
   })
  
@@ -101,17 +106,19 @@ shinyServer(function(input, output, session) {
       if (is.null(q_sel)) q_sel <- 'q1'
       dt_bs <- basicos %>% filter(id == q_sel)
       
-      var_sel <- dt_bs$variable
+      var_sel <- c(dt_bs$variable)
       
       if (var_sel == 'delito') var_sel <- paste0('delito_', 1:7)
       if (input$last_chart == "map" & q_sel != 'q3') var_sel <- c(var_sel, 'departamento')
       
+      var_sel <- c("id_caso", var_sel)
+      print(var_sel)
       if (dt_bs$base == 'notas') {
         dt <- notas
       } else if (dt_bs$base == 'casos') {
         dt <- casos[var_sel]
         if (dt_bs$variable == 'delito') {
-          dt <- dt %>% gather("delitoxx", "delito", delito_1:delito_7) %>% select(-delitoxx)
+          dt <- dt %>% gather("delitoxx", "delito", delito_1:delito_7) %>% select(-delitoxx) %>% drop_na(delito)
         }
       } else {
         dt <- actores %>% filter(actores$tipo_de_participacion == 'Actor involucrado')
@@ -131,16 +138,16 @@ shinyServer(function(input, output, session) {
      
       if (base == "Hechos") {
         if (var_cruce == "none"){
-          dt <- casos %>% select_(var_prim)
+          dt <- casos %>% select_('id_caso', var_prim)
         } else {
-          dt <- casos %>% select_(var_prim, var_cruce)
+          dt <- casos %>% select_('id_caso', var_prim, var_cruce)
         }
         
       } else {
         if (var_cruce == "none" | is.null(var_cruce)){
-          dt <- actores %>% select_(var_prim)
+          dt <- actores %>% select_('id_caso', var_prim)
         } else {
-          dt <- actores %>% select_(var_prim, var_cruce)
+          dt <- actores %>% select_('id_caso', var_prim, var_cruce)
         }
       }
     }
@@ -160,9 +167,26 @@ shinyServer(function(input, output, session) {
     
     click_chart <- gsub('barras|barrash', 'bar', click_chart)
     
-    df <- data_viz()
+    df <- data_viz() %>% select(-id_caso)
     colSc <- 'no'
-    if (click_chart == 'pie') colSc <- 'discrete'
+    colors <- c("#fdb731")
+    
+    if (click_chart == 'pie' | click_chart == 'treemap') {
+      colSc <- 'discrete'
+      colors <-  c("#3DB26F", "#FECA84", "#74D1F7", "#F75E64", "#8097A4", "#B70F7F", "#5D6AE9", "#53255E", "#BDCAD1")
+    }
+    
+    
+    myFunc <- JS("function(event) {Shiny.onInputChange('hcClicked',  {id:event.point.name, timestamp: new Date().getTime()});}")
+    
+    if (click_chart == 'line') myFunc <- JS("function(event) {Shiny.onInputChange('hcClicked',  {id:event.point.category.name, timestamp: new Date().getTime()});}")
+    
+    
+    if (ncol(df) == 2) {
+      colSc <- "discrete"
+      colors <- c("#3DB26F", "#FECA84", "#74D1F7", "#F75E64", "#8097A4", "#B70F7F", "#5D6AE9", "#53255E", "#BDCAD1")
+      myFunc <- JS("function(event) {Shiny.onInputChange('hcClicked',  {id:event.point.category.name, cat:this.name, timestamp: new Date().getTime()});}")
+    }
     
     opts_viz <- list(
       title = NULL,
@@ -171,7 +195,7 @@ shinyServer(function(input, output, session) {
       horLabel = NULL,
       verLabel = NULL,
       labelWrap = 30,
-      colors = c("#fdb731"),
+      colors = colors,
       color_scale = colSc,
       agg = "sum",
       agg_text = NULL,
@@ -187,16 +211,17 @@ shinyServer(function(input, output, session) {
       showText = TRUE,
       tooltip = list(headerFormat = NULL, pointFormat = NULL),
       export = FALSE,
-      theme = NULL,
       lang = 'es',
       allow_point = TRUE,
       cursor =  'pointer',
-      clickFunction = JS("function(event) {Shiny.onInputChange('hcClicked',  {id:event.point.category.name, timestamp: new Date().getTime()});}"),
-      graphType = "stacked",
+      clickFunction = myFunc,
+      color_hover = "#fa8223",
+      color_click  = "#fa8223",
       labelWrapV = c(30, 30),
       legend_position  = "center",
       startAtZero = TRUE,
-      spline = FALSE
+      spline = FALSE,
+      theme = tma(custom = list(stylesX_lineWidth = 0, colors = colors))
     )
     
     typeDt <- 'Cat'
@@ -209,9 +234,60 @@ shinyServer(function(input, output, session) {
   })
   
   
-  output$lala <- renderPrint({
-    data_viz()
+ 
+  data_ficha <- reactive({
+    df <- data_viz() 
+    
+    if (is.null(df) | nrow(df) == 0) return()  
+    
+    var1 <- input$hcClicked$id
+    
+    if (is.null(var1)) return()
+    
+    var2 <- input$hcClicked$cat
+    
+
+    if (is.null(var2)) {
+      var_sel <- names(df)[2]
+      dta <- df[df[var_sel] == var1,]
+    } else {
+      var_sel_uno <- names(df)[2]
+      var_sel_dos <- names(df)[3]
+      dta <- df[df[var_sel_uno] == var2 & df[var_sel_dos] == var1,]
+    }
+    
+    dt <- dta %>% drop_na() %>% distinct(id_caso)
+    dt <- dt %>% left_join(casos)
+    dt
   })
+  
+  output$lala <- renderPrint({
+    data_ficha() 
+  })
+  
+  output$fichas <- renderUI({
+    info <- data_ficha()
+    txt <- HTML("<img src='click/click.svg' style='width: 50px; display:block;'/> Haz click en la gráfica </br>
+                  para ver los hechos de </br> corrupción relacionados")
+    
+    if (is.null(info)) return(txt)
+    if(nrow(info) == 0) txt <- txt
+    
+    
+    filas <- nrow(info)
+    txt <- map(1:filas, function(x){
+      div(class = "ficha",
+          info$`nombre_hecho_de_corrupcion_(publico)`[x],
+          info$`subtitulo_hecho_de_corrupcion_(publico)`[x],
+          tags$button(id = info$id_caso[x], class = "click_ficha",  "Ver más")
+          )
+    })
+
+    txt
+  })
+  
+  
+  
   
   # Salida Panel Uno
   output$panel_1 <- renderUI({
@@ -226,80 +302,19 @@ shinyServer(function(input, output, session) {
   # Salidad Panel Dos
   
   output$panel_2 <- renderUI({
-    div(
+    div(class = "viz_out", style = "height: 100%;",
     HTML("VISUALIZACIÓN"),  
-    highchartOutput('viz_hgch')#,
-    #verbatimTextOutput("lala")
+    highchartOutput('viz_hgch',height = 570),
+    verbatimTextOutput("lala")
     )
   })
   
+  # Salida Panel Tres
   
-  #############
-  data_basic <- reactive({
-    q_i <- input$last_click
-    if (is.null(q_i)) q_i <- "q1"
-    df <- basicos %>% filter(id %in% q_i)
-    var_sel <- df$variable
-    d <- casos %>% 
-      group_by_(var_sel) %>% 
-      summarise(Conteo = n())
-    d[[var_sel]] <- as.character(d[[var_sel]])
-    d
-  })
-  
-  viz_hgch <- reactive({
-    data <- data_basic()
-    hgch_bar_CatNum(data, opts = list(color_scale = "no", 
-                                      allow_point = TRUE,
-                                      cursor =  "pointer",
-                                      clickFunction = JS("function(event) {Shiny.onInputChange('hcClicked',  {id:event.point.name, timestamp: new Date().getTime()});}"
-                                                         )
-    )
-    )
-  })
-  
-  output$viz_hgch_out <- renderHighchart({
-    viz_hgch()
-  })
-  
-  output$click_viz <- renderPrint({
-    input$hcClicked
+  output$panel_3 <- renderUI({
+    uiOutput("fichas")
   })
 
-  data_ficha <- reactive({
-    cat_sel <- input$hcClicked$id
-    
-    q_i <- input$last_click
-
-    if (is.null(q_i)) q_i <- "q1"
-    df <- basicos %>% filter(id %in% q_i)
-    var_sel <- df$variable
-    
-
-    if (is.null(cat_sel)) {
-      tx <- "Haz click en la gráfica para ver los hechos de
-             corrupción relacionados."
-    } else {
-      tx <- casos[casos[, var_sel] == cat_sel, ]
-    }
-
-    tx
-  })
-  
-  output$fichas <- renderPrint({
-    data_ficha()
-  })
-  
-  
-  # options_viz <- reactive({
-  #   opts <- list(
-  #     highlight_
-  #   )
-  # })
-  
-  output$click <- renderPrint({
-    data_basic()
-  })
   
   
   
