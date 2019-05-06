@@ -4,7 +4,7 @@ shinyServer(function(input, output, session) {
   
   output$basicos <- renderUI({
     
-    l <- map(1:nrow(basicos), function(z){
+    l <- purrr::map(1:nrow(basicos), function(z){
       actionButton(inputId = basicos[z,]$id, label = basicos[z,]$preguntas, class = "needed")
     })
     l[[1]] <- gsub("needed", "needed active", l[[1]])
@@ -28,12 +28,14 @@ shinyServer(function(input, output, session) {
     
     chart <- input$last_chart
     
-    df <- avanzados %>% filter(base == data_sel)
+    df <- avanzados %>% 
+           dplyr::filter(base == data_sel)
     
     if(chart != "lines") {
       df <- df 
     } else {
-      df <- df %>% filter(variables_id != c('ano_final_hecho', 'ano_inicial_hecho'))
+      df <- df %>% 
+        dplyr::filter(variables_id != c('ano_final_hecho', 'ano_inicial_hecho'))
     }   
     
     setNames(df$variables_id, df$variables_label)
@@ -56,16 +58,16 @@ shinyServer(function(input, output, session) {
                             var_label = c(' ', 'Departamento', 'Region', 'Municipio'))
     
     if (viz_sel == "barras" | viz_sel == "barrash"){
-      df <- cruces %>% filter(var_sel == var_cho)
+      df <- cruces %>% dplyr::filter(var_sel == var_cho)
       if (nrow(df) == 0) {
         l <- sometimes
       } else {
-        l <- bind_rows(data.frame(org = c('none'), var_label = c(' ')),df)
+        l <- suppressWarnings(suppressMessages(dplyr::bind_rows(data.frame(org = c('none'), var_label = c(' ')),df)))
       }
     } else if (viz_sel == "map") {
       l <- sometimes[-1,]
     } else if (viz_sel == "lines") {
-      l <- cruces %>% filter(plot == "lineas")
+      l <- cruces %>% dplyr::filter(plot == "lineas")
     } else {
       l <- NULL
     }
@@ -104,7 +106,7 @@ shinyServer(function(input, output, session) {
     if (l_o == "Basico") {
       q_sel <- input$last_click
       if (is.null(q_sel)) q_sel <- 'q1'
-      dt_bs <- basicos %>% filter(id == q_sel)
+      dt_bs <- basicos %>% dplyr::filter(id == q_sel)
       
       var_sel <- c(dt_bs$variable)
       
@@ -118,10 +120,10 @@ shinyServer(function(input, output, session) {
       } else if (dt_bs$base == 'casos') {
         dt <- casos[var_sel]
         if (dt_bs$variable == 'delito') {
-          dt <- dt %>% gather("delitoxx", "delito", delito_1:delito_7) %>% select(-delitoxx) %>% drop_na(delito)
+          dt <- dt %>% dplyr::gather("delitoxx", "delito", delito_1:delito_7) %>% dplyr::select(-delitoxx) %>% dplyr::drop_na(delito)
         }
       } else {
-        dt <- actores %>% filter(actores$tipo_de_participacion == 'Actor involucrado')
+        dt <- actores %>% dplyr::filter(actores$tipo_de_participacion == 'Actor involucrado')
         dt <- dt[var_sel]
       }
     } else {
@@ -138,23 +140,28 @@ shinyServer(function(input, output, session) {
      
       if (base == "Hechos") {
         if (var_cruce == "none"){
-          dt <- casos %>% select_('id_caso', var_prim)
+          dt <- casos %>% dplyr::select_('id_caso', var_prim)
         } else {
-          dt <- casos %>% select_('id_caso', var_prim, var_cruce)
+          dt <- casos %>% dplyr::select_('id_caso', var_prim, var_cruce)
         }
         
       } else {
         if (var_cruce == "none" | is.null(var_cruce)){
-          dt <- actores %>% select_('id_caso', var_prim)
+          dt <- actores %>% dplyr::select_('id_caso', var_prim)
         } else {
-          dt <- actores %>% select_('id_caso', var_prim, var_cruce)
+          dt <- actores %>% dplyr::select_('id_caso', var_prim, var_cruce)
         }
       }
     }
     dt
   })
 
-  
+  data_titles_axis <- reactive({
+    dt <- data_viz() %>% select(-id_caso)
+    df_ind <- data.frame(id = names(dt))
+    dic <- left_join(df_ind, dic_casos)
+    dic
+  })
 
   output$viz_hgch <- renderHighchart({
     
@@ -163,7 +170,17 @@ shinyServer(function(input, output, session) {
     click_chart <- gsub('lines', 'line',  click_chart)
     
     orientacion <- 'ver'
-    if (click_chart == 'barrash') orientacion <- 'hor'
+    
+    horLabel <- NULL
+    verLabel <-"Número de hechos"
+    
+  
+    
+    if (click_chart == 'barrash'){
+      orientacion <- 'hor'
+      horLabel <- "Número de hechos"
+      verLabel <- NULL
+    } 
     
     click_chart <- gsub('barras|barrash', 'bar', click_chart)
     
@@ -192,13 +209,13 @@ shinyServer(function(input, output, session) {
       title = NULL,
       subtitle = NULL,
       caption = NULL,
-      horLabel = NULL,
-      verLabel = NULL,
+      horLabel = horLabel,
+      verLabel = verLabel,
       labelWrap = 30,
       colors = colors,
       color_scale = colSc,
       agg = "sum",
-      agg_text = NULL,
+      agg_text = " ",
       orientation = orientacion,
       marks = c(".", ","),
       nDigits = NULL,
@@ -229,7 +246,13 @@ shinyServer(function(input, output, session) {
     
     viz <- paste0('hgch_', click_chart, '_', typeDt)
     
-    do.call(viz, c(list(df, opts = opts_viz)))
+    
+    dic <- data.frame(id = as.character(names(df)))
+    dic <- dplyr::left_join(dic, dic_casos)
+    df <- datafringe::fringe(df, dic)
+   
+    
+    do.call(viz, c(list(data = df, opts = opts_viz)))
     
   })
   
@@ -262,7 +285,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$lala <- renderPrint({
-    data_viz() 
+    data_titles_axis()
   })
   
   output$ficha_peque <- renderUI({
@@ -275,7 +298,9 @@ shinyServer(function(input, output, session) {
     
     
     filas <- nrow(info)
-    txt <- map(1:filas, function(x){
+    if (filas == 0) return(txt)
+
+    txt <- purrr::map(1:filas, function(x){
       div(class = "ficha",
           div(class = "cont_info",
           HTML(paste0('<div class = "title_ficha">',info$`nombre_hecho_de_corrupcion_(publico)`[x], '</div>')),
@@ -283,7 +308,6 @@ shinyServer(function(input, output, session) {
           tags$button(id = info$id_caso[x], class = "click_ficha",  "Ver más")
           )
     })
-
     txt
   })
   

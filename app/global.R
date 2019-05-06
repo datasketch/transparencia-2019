@@ -1,9 +1,8 @@
+library(tidyverse)
 library(lfltmagic)
 library(hgchmagic)
-library(tidyverse)
 library(dsAppWidgets)
-library(geomagic)
-library(lfltmagic)
+
 
 actores <- read_csv("data/clean/casos_all_data.csv")
 casos <- read_csv("data/clean/casos_agregadas_data.csv")
@@ -28,7 +27,7 @@ map_c <- function(id){
   data2 <- data.frame(id = caso$departamento, num = 100)
   
   
-  p1 <- suppressWarnings(suppressMessages(  gg_choropleth_GnmNum(data = data2, mapName = "col_departments") +
+  p1 <- suppressWarnings(suppressMessages(  geomagic::gg_choropleth_GnmNum(data = data2, mapName = "col_departments") +
                                               scale_fill_gradient(low = '#0095D4', high = '#0095D4') +scale_x_continuous(expand=c(0,0)) + scale_y_continuous(expand=c(0,0)) + 
                                               guides(fill = FALSE))) + theme(plot.margin=unit(c(0,0,0,0),"mm"))  
   
