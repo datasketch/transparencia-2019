@@ -7,7 +7,8 @@ $(document).on('click', '.click_option', function () {
 });
 
 $(document).on('click', '.click_ficha', function () {
-  Shiny.onInputChange('last_case',this.id);
+  Shiny.setInputValue("last_case", this.id, {priority: "event"});
+  //Shiny.onInputChange('last_case',this.id);
 });
 
 
