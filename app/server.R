@@ -362,12 +362,12 @@ shinyServer(function(input, output, session) {
     h
   })
   
-  # output$map_d <- renderPlot({
-  #   id <- input$last_case
-  #   if(is.null(id)) return()
-  #   map_c(id)
-  # 
-  # })
+  output$map_d <- renderLeaflet({
+    id <- input$last_case
+    if(is.null(id)) return()
+    map_c(id)
+
+  })
   
   
   fichaInfo <- reactive({
@@ -387,6 +387,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$last_case, {
     showModal(modalDialog(
       title = '',
+      size = 'l',
       easyClose = TRUE,
       footer = modalButton("Cerrar"), 
       uiOutput('ficha'), 
@@ -409,14 +410,14 @@ shinyServer(function(input, output, session) {
             id = id,
             title =  gsub("\"","'",caso_i$`nombre_hecho_de_corrupcion_(publico)`),
             subtitle =  gsub("\"","'",caso_i$`subtitulo_hecho_de_corrupcion_(publico)`),
-            #mapc = map_c(id),
+            mapc = map_c(id),
             abstract =  gsub("\"","'",caso_i$hecho_de_corrupcion),
             lugar = paste0(toupper(caso_i$departamento), ifelse(is.na(caso_i$municipio), '', paste0(' - ', toupper(caso_i$municipio)))),
             inicio = ifelse(is.na(caso_i$ano_inicial_hecho), 'No disponible', caso_i$ano_inicial_hecho),
             actor = ifelse(is.na(caso_i$new), 'No disponible', caso_i$new),
             tipo =  ifelse(is.na(caso_i$tipo_corrupcion), 'No disponible', caso_i$tipo_corrupcion),
             delito = ifelse(is.na(caso_i$delito), '', caso_i$delito),
-            sector = toupper(caso_i$sector),
+            sector = toupper(caso_i$sector_afectado),
             # dinero =  as.character(ifelse(is.na(caso_i$dinero_juego), 'No disponible', paste0(' $',  format(caso_i$dinero_juego, nsmall= 0, big.mark=",")))),
             entidad = ifelse(is.na(caso_i$institucion), '', caso_i$subcategoria_1_actor_indivual),
             estado = ifelse(is.na(caso_i$situacion_judicial), '', caso_i$situacion_judicial),
@@ -466,7 +467,7 @@ shinyServer(function(input, output, session) {
     )
   })
   
-  
+
   
   
 })

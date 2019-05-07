@@ -18,19 +18,27 @@ caso <- function(id){
 }
 
 
-# función de mapas
-# map_c <- function(id){
-#   
-#   caso <- caso(id)
-#   data2 <- data.frame(id = caso$departamento, num = 100)
-#   
-#   
-#   p1 <- suppressWarnings(suppressMessages(  geomagic::gg_choropleth_GnmNum(data = data2, mapName = "col_departments") +
-#                                               scale_fill_gradient(low = '#0095D4', high = '#0095D4') +scale_x_continuous(expand=c(0,0)) + scale_y_continuous(expand=c(0,0)) + 
-#                                               guides(fill = FALSE))) + theme(plot.margin=unit(c(0,0,0,0),"mm"))  
-#   
-#  p1
-# }
+map_c <- function(id){
+
+  opts_map = list(
+  defaultFill = "#dddddd",
+  naColor = "#CCCCCC",
+  tiles = NULL,
+  border_color = "#cccccc",
+  colors = c('#c250c2', '#c250c2'),
+  zoom = 4
+  )
+  caso <- caso(id)
+  data2 <- data.frame(id = caso$departamento, num = 100)
+
+
+  p1 <- suppressWarnings(suppressMessages( 
+    lflt_choropleth_GnmNum(data = data2, mapName = "col_departments", opts = opts_map)%>%
+      clearControls() 
+  ))
+
+ p1
+}
 
 
 
@@ -46,33 +54,21 @@ getFicha <- function(id){
           #column(3,
           #       "uiOutput('img_d')"),
           HTML(
-            paste0('<div style="display: block; margin-top: -15%;margin-right: -10%;text-align: right;">',img(src = 'logo.jpg', style = "width: 180px;"),'</div>')
+            paste0(img(src = 'logo.png', style = "width: 150px;float: right;"))
           ),
           column(12, 
                  HTML('<div>',  paste0(div(id = "tdesg",(toupper(caso$`nombre_hecho_de_corrupcion_(publico)`))), 
                                        div(id = "subdesg", (caso$`subtitulo_hecho_de_corrupcion_(publico)`)),'</div>','<br><br/>'
-                 ))
+                 )),
+                 leafletOutput("map_d", height = 210)
           ))),
     fluidRow(
-      div(id = "styhecho", class = "text-justify",
-          column(12, 
-                 HTML(
+      div(id = "styhecho", 
                    caso$hecho_de_corrupcion)
-          )
-      )),
-    # div(id = "bodysty",
-    #     fluidRow(
-    #       # column(12,
-    #       #        HTML(paste0( '<center>',
-    #       #                     plotOutput("map_d", height = "250px", width = "250px"),
-    #       #                     '</center>'
-    #       #        ))
-    #       # )
-    #     )),
+      ),
     div(id = "bodysty",
     fluidRow(
-      div(class='col-sm-12', style = 'margin-left: 14%;margin-left: 14%;padding: 0%;display: block;
-          width: 70%;',
+      div(class='col-sm-12', 
           HTML(paste0('<div class="container vertical-divider">
                       <div class="column one-third">
                       <table class="TFtable">',
@@ -99,7 +95,7 @@ getFicha <- function(id){
                       '</td>',
                       '</tr>',
                       '</table>
-                      </div>
+                    </div>
                       <div class="column two-thirds"> ',
                       
                       '<table class="TFtable">',
@@ -113,7 +109,7 @@ getFicha <- function(id){
                                          '</td>',
                                          '</table>')),
                              HTML(paste0(    
-                               '<td style="width: 50%">',
+                               '<td style="width: 34%;">',
                                div(id="colone",'DELITO:'),'</td>',
                                '<td>', div(id = "coltwo", ifelse(is.na(caso$delito), 'No disponible', caso$delito)),
                                '</tr>',

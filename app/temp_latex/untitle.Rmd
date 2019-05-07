@@ -22,10 +22,10 @@ actualizacion: "`r params$actualizacion`"
 \vspace{0.5cm}
 
 ```{r include=FALSE}
-
+library(lfltmagic)
 ```
 
 
-```{r echo=FALSE, message='hide', fig.align='center',out.width = '150px', out.height = '150px', warning=FALSE, cache=FALSE, comment=NA, results='hide'}
-
+```{r echo=FALSE, message='hide', fig.align='center',out.width = '150px', out.height = '150px', warning=FALSE, cache=FALSE, comment=NA, results='hide', background='#ffffff'}
+map_c(id) %>% addTiles()
 ```

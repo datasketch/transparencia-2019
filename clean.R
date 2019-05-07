@@ -88,7 +88,7 @@ casos$departamento[casos$departamento == 'NORTE SANTANDER'] <- 'NORTE DE SANTAND
 casos$departamento[casos$departamento == 'VALLE'] <- 'VALLE DEL CAUCA'
 casos$departamento[casos$departamento == 'GUAJIRA'] <- 'LA GUAJIRA'
 casos$departamento[casos$departamento == 'CASARE'] <- 'CASANARE'
-casos$departamento[casos$departamento == 'BOGOTÁ, DISTRITO CAPITAL'] <- 'SANTAFE DE BOGOTA D.C'
+casos$departamento[casos$departamento == 'BOGOTÁ, DISTRITO CAPITAL'] <- 'BOGOTÁ, D. C.'
 casos$departamento[casos$departamento == 'CUNDIMARCA'] <- 'CUNDINAMARCA'
 
 
