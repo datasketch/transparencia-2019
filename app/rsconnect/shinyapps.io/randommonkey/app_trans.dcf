@@ -1,0 +1,12 @@
+name: app_trans
+title: app_trans
+username:
+account: randommonkey
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 913495
+bundleId: 2065447
+url: https://randommonkey.shinyapps.io/app_trans/
+when: 1557193204.11371
+asMultiple: FALSE
+asStatic: FALSE

@@ -7,17 +7,18 @@ shinyServer(function(input, output, session) {
     l <- purrr::map(1:nrow(basicos), function(z){
       actionButton(inputId = basicos[z,]$id, label = basicos[z,]$preguntas, class = "needed")
     })
-    l[[1]] <- gsub("needed", "needed active", l[[1]])
+    l[[1]] <- gsub("needed", "needed basic_active", l[[1]])
     l[[1]] <- HTML(paste0(paste(l[[1]], collapse = '')))
     
     div(class = "opciones_basicas",
-    tags$button(id = "Basico", class = "click_option",  HTML("<div id='opts' class = 'active_opt'>&gt;</div> OPCIONES BÁSICAS")),
-    HTML("Visualizar"),
-    div(class = "preguntas_basicas",
-    l
-    ))
+        tags$button(id = "Basico", class = "click_option",  HTML("<div id='opts' class = 'active_opt'>&gt;</div> OPCIONES BÁSICAS")),
+        div(id = "cont_basicas",
+        HTML("<div style='font-size:15px;margin-top: 9px;'>Visualizar</div>"),
+        div(class = "preguntas_basicas",
+            l
+        )))
   })
- 
+  
   
   # variables según base
   #variables_avanzadas <- reactiveValues(var = NULL)
@@ -29,7 +30,7 @@ shinyServer(function(input, output, session) {
     chart <- input$last_chart
     
     df <- avanzados %>% 
-           dplyr::filter(base == data_sel)
+      dplyr::filter(base == data_sel)
     
     if(chart != "lines") {
       df <- df 
@@ -53,7 +54,7 @@ shinyServer(function(input, output, session) {
     if (is.null(viz_sel)) return()
     var_cho <- input$var_principal
     if (is.null(var_cho)) return()
-
+    
     sometimes <- data.frame(org = c('none','departamento', 'region', 'municipio'),
                             var_label = c(' ', 'Departamento', 'Region', 'Municipio'))
     
@@ -74,7 +75,7 @@ shinyServer(function(input, output, session) {
     setNames(as.character(l$org), as.character(l$var_label))
   })
   
-
+  
   observe({
     updateSelectInput(session, "var_cruce",
                       choices = outCross()
@@ -85,9 +86,11 @@ shinyServer(function(input, output, session) {
   output$avanzadas <- renderUI({
     div(class = "opciones_avanzadas",
         tags$button(id = "Avanzada", class = "click_option",  HTML("<div id='opts_a'>&gt;</div> OPCIONES AVANZADAS")),
+        div(id = "cont_avanzada", class = "hideOptions",
         radioButtons(inputId = "base_sel", label = "Información de", c('Hechos', 'Actores'), inline = T),
         selectInput(inputId = 'var_principal', label = "Visualizar", choices = NULL),
         selectInput(inputId = 'var_cruce', label = "organizado por", choices = NULL)
+        )
     )
   })
   
@@ -108,10 +111,10 @@ shinyServer(function(input, output, session) {
       if (is.null(q_sel)) q_sel <- 'q1'
       dt_bs <- basicos %>% dplyr::filter(id == q_sel)
       
-      var_sel <- c(dt_bs$variable)
+      var_sel <- dt_bs$variable
       
       if (var_sel == 'delito') var_sel <- paste0('delito_', 1:7)
-      if (input$last_chart == "map" & q_sel != 'q3') var_sel <- c(var_sel, 'departamento')
+      #if (input$last_chart == "map" & q_sel != 'q3') var_sel <- c(var_sel, 'departamento')
       
       var_sel <- c("id_caso", var_sel)
       print(var_sel)
@@ -137,7 +140,7 @@ shinyServer(function(input, output, session) {
       
       if (click_chart == "pie" | click_chart == "treemap") var_cruce <- "none"
       
-     
+      
       if (base == "Hechos") {
         if (var_cruce == "none"){
           dt <- casos %>% dplyr::select_('id_caso', var_prim)
@@ -155,14 +158,24 @@ shinyServer(function(input, output, session) {
     }
     dt
   })
-
-  data_titles_axis <- reactive({
-    dt <- data_viz() %>% select(-id_caso)
-    df_ind <- data.frame(id = names(dt))
-    dic <- left_join(df_ind, dic_casos)
-    dic
+  
+  data_titles <- reactive({
+    l_o <- input$last_option 
+    if (is.null(l_o)) l_o <- "Basico"
+    
+    if (l_o == "Basico") {
+      q_sel <- input$last_click
+      if (is.null(q_sel)) q_sel <- 'q1'
+      title <- basicos$titulos[basicos$id == q_sel]
+    } else {
+      q_sel <- input$var_principal
+      title <- paste0('Hechos de corrupción investigados y reportados por la prensa en Colombia según ',dic_casos$label[dic_casos$id == q_sel])
+    }
+    
+    title
+    
   })
-
+  
   output$viz_hgch <- renderHighchart({
     
     click_chart <- input$last_chart
@@ -174,7 +187,7 @@ shinyServer(function(input, output, session) {
     horLabel <- NULL
     verLabel <-"Número de hechos"
     
-  
+    
     
     if (click_chart == 'barrash'){
       orientacion <- 'hor'
@@ -208,7 +221,7 @@ shinyServer(function(input, output, session) {
     opts_viz <- list(
       title = NULL,
       subtitle = NULL,
-      caption = NULL,
+      caption = "Fuente: Transparencia por Colombia (2017)",
       horLabel = horLabel,
       verLabel = verLabel,
       labelWrap = 30,
@@ -238,7 +251,13 @@ shinyServer(function(input, output, session) {
       legend_position  = "center",
       startAtZero = TRUE,
       spline = FALSE,
-      theme = tma(custom = list(stylesX_lineWidth = 0, colors = colors))
+      theme = tma(custom = list(stylesX_lineWidth = 0, 
+                                colors = colors,
+                                font_family = "Raleway",
+                                font_size = '11px',
+                                font_color = '#000000',
+                                stylesTitleY_fontWeight = 'bold',
+                                stylesTitleX_fontWeight = 'bold'))
     )
     
     typeDt <- 'Cat'
@@ -250,14 +269,16 @@ shinyServer(function(input, output, session) {
     dic <- data.frame(id = as.character(names(df)))
     dic <- dplyr::left_join(dic, dic_casos)
     df <- datafringe::fringe(df, dic)
-   
+    
     
     do.call(viz, c(list(data = df, opts = opts_viz)))
     
   })
   
+  output$title_viz <- renderUI({
+    HTML(paste0(as.character(data_titles())), collapse = '')
+  })
   
- 
   data_ficha <- reactive({
     df <- data_viz() 
     
@@ -269,7 +290,7 @@ shinyServer(function(input, output, session) {
     
     var2 <- input$hcClicked$cat
     
-
+    
     if (is.null(var2)) {
       var_sel <- names(df)[2]
       dta <- df[df[var_sel] == var1,]
@@ -284,9 +305,6 @@ shinyServer(function(input, output, session) {
     dt
   })
   
-  output$lala <- renderPrint({
-    data_titles_axis()
-  })
   
   output$ficha_peque <- renderUI({
     info <- data_ficha()
@@ -299,24 +317,57 @@ shinyServer(function(input, output, session) {
     
     filas <- nrow(info)
     if (filas == 0) return(txt)
-
+    
     txt <- purrr::map(1:filas, function(x){
       div(class = "ficha",
           div(class = "cont_info",
-          HTML(paste0('<div class = "title_ficha">',info$`nombre_hecho_de_corrupcion_(publico)`[x], '</div>')),
-          HTML(paste0('<div class = "sub_ficha">',info$`subtitulo_hecho_de_corrupcion_(publico)`[x], '</div>'))),
+              HTML(paste0('<div class = "title_ficha">',info$`nombre_hecho_de_corrupcion_(publico)`[x], '</div>')),
+              HTML(paste0('<div class = "sub_ficha">',info$`subtitulo_hecho_de_corrupcion_(publico)`[x], '</div>'))),
           tags$button(id = info$id_caso[x], class = "click_ficha",  "Ver más")
-          )
+      )
     })
     txt
   })
   
-  output$map_d <- renderPlot({
-    id <- input$last_case
-    if(is.null(id)) return()
-    map_c(id)
+  
+  # output$blabl <- renderPrint({
+  #   input$viz_lflt_shape_click$id
+  # })
+  
+  output$viz_lflt <- renderLeaflet({
+    dt_m <- data_viz() %>% select(-id_caso)
+    if (names(dt_m)[1] == 'departamento') {
+      dt <- dt_m %>% 
+              dplyr::group_by(departamento) %>% 
+                dplyr::summarise(Total = n())
+      print(dt)
+      lf <- lflt_choropleth_GnmNum(data = dt, mapName = "col_departments")
+    } else {
+      lf <- lflt_choropleth_GnmNum(mapName = "col_departments")    
+    }
+    
+    lf
     
   })
+  
+  
+  output$viz_res <- renderUI({
+    click_chart <- input$last_chart
+    if (is.null(click_chart)) return("Cargando...")
+    if(click_chart == "map") {
+      h <- leafletOutput("viz_lflt", height = 550)
+    } else {
+      h <- highchartOutput('viz_hgch', height = 550)
+    }
+    h
+  })
+  
+  # output$map_d <- renderPlot({
+  #   id <- input$last_case
+  #   if(is.null(id)) return()
+  #   map_c(id)
+  # 
+  # })
   
   
   fichaInfo <- reactive({
@@ -358,7 +409,7 @@ shinyServer(function(input, output, session) {
             id = id,
             title =  gsub("\"","'",caso_i$`nombre_hecho_de_corrupcion_(publico)`),
             subtitle =  gsub("\"","'",caso_i$`subtitulo_hecho_de_corrupcion_(publico)`),
-            mapc = map_c(id),
+            #mapc = map_c(id),
             abstract =  gsub("\"","'",caso_i$hecho_de_corrupcion),
             lugar = paste0(toupper(caso_i$departamento), ifelse(is.na(caso_i$municipio), '', paste0(' - ', toupper(caso_i$municipio)))),
             inicio = ifelse(is.na(caso_i$ano_inicial_hecho), 'No disponible', caso_i$ano_inicial_hecho),
@@ -388,6 +439,7 @@ shinyServer(function(input, output, session) {
     div(
       uiOutput('basicos'),
       uiOutput('avanzadas'),
+      HTML("<div id = 'type_viz' style = 'margin-top:15px; font-size:15px;font-weight: 700;'>Tipo de visualización <div>"),
       uiOutput('vizOptions')
     )
   })
@@ -396,10 +448,10 @@ shinyServer(function(input, output, session) {
   # Salidad Panel Dos
   
   output$panel_2 <- renderUI({
-    div(class = "viz_out", style = "height: 100%;",
-    HTML("<div class = 'title_panel'>VISUALIZACIÓN</div>"),  
-    highchartOutput('viz_hgch',height = 570),
-    verbatimTextOutput("lala")
+    div(class = "viz_out", style = "height: 100%; margin-top: 11px;",
+        HTML("<div class = 'title_panel'>VISUALIZACIÓN</div>"), 
+        uiOutput('title_viz'),
+        uiOutput('viz_res')
     )
   })
   
@@ -409,11 +461,11 @@ shinyServer(function(input, output, session) {
     div(class = "tj_out",
         HTML("<div class = 'title_panel'>HECHOS</div>"), 
         div(class = "content_ficha_mini",
-    uiOutput("ficha_peque")
+            uiOutput("ficha_peque")
         )
     )
   })
-
+  
   
   
   

@@ -6,6 +6,16 @@
 	box-sizing: inherit;
 }
 
+button:focus{
+ outline: none !important;
+}
+
+.shiny-output-error {
+  visibility: hidden;
+  }
+.shiny-output-error:before {
+  visibility: hidden; }
+
 
 html,
 body {
@@ -18,10 +28,13 @@ body {
 	background: #f8f8f8;
 }
 
+
 .panels {
  display: grid;
  grid-template-columns: 25% 50% 25%;
 }
+
+
 
 #panel_2 {
   background: #ffffff;
@@ -29,11 +42,21 @@ body {
 
 .title_panel {
  text-align: center;
- font-weight: 900;
+ font-weight: 700;
+ margin-top: 11px;
 }
 
+#title_viz {
+  color: #000000 !important;
+  font-weight: 700 !important;
+  font-size: 17px;
+  margin-top: 1px;
+  padding: 3%;
+  text-align: center;
+}
 
 #basicos{
+ margin-top: 11px;
  max-width: 95%;
 }
 
@@ -42,11 +65,14 @@ body {
  grid-gap: 10px; 
 }
 
+#Avanzada {
+ margin-top: 15px;
+}
 
 #Basico,#Avanzada {
  background: transparent;
- border: 1px solid;
- font-weight: 900;
+ border: 0px !important;
+ font-weight: 700;
  margin-bottom: 5px;
  max-width: 95%;
  text-align: left;
@@ -62,11 +88,30 @@ body {
 }
 
 .preguntas_basicas {
- border: 1px solid;
  height: 290px;
  margin-bottom: 17px;
+ margin-top: 11px;
  overflow: overlay;
 }
+
+.btn-default {
+  color: #0a446b !important;
+  background-color: #fff;
+  border-color: #ccc;
+}
+
+.btn-default:hover {
+    color: #ffffff !important;
+    background-color: #0a446b;
+    border-color: #0a446b;
+}
+
+.basic_active {
+  color: #ffffff !important;
+  background-color: #0a446b !important;
+  border-color: #0a446b !important;
+}
+
 
 .needed {
  margin-bottom: 9px;
@@ -92,19 +137,25 @@ body {
 
 
 .buttons-group {
- grid-gap: 0px !important; 
+ background: transparent !important;
+ grid-gap: 15px !important; 
  grid-template-columns: repeat(3, 1fr) !important;
  padding: 0 !important;
 }
 
+
 .buttons-group .buttonStyle {
- height: 70px !important;
- width: 70px !important;
+ height: 55px !important;
+ width: 55px !important;
 }
 
-.buttons-group .buttonStyle .imgStyle {
- width: 70px !important;
- filter: none !important;
+.imgStyle {
+  width: 55px !important;
+  padding: 11%;
+  background: #ffffff !important;
+  height: 55px !important;
+  border-radius: 3px !important;
+  box-shadow: 0px 0px 7px 0px #cccccc !important;
 }
 
 .ficha {
@@ -117,9 +168,9 @@ body {
 }
 
 .content_ficha_mini{
- height: 650px;
- margin-bottom: 17px;
+ height: 630px;
  overflow: overlay;
+ margin-top: 9%;
 }
 
 .cont_info {
@@ -173,4 +224,51 @@ body {
 .indicacion{
   margin-top: 50%;
   text-align: center;
+}
+
+
+.selectize-input > * {
+  background: #0a446b;
+  color: #fff !important;
+  padding: 2%;
+}
+
+.selectize-dropdown {
+ color: #0a446b !important; 
+}
+
+label {
+  font-weight: 300 !important;
+  font-size: 15px !important;
+}
+
+
+
+
+.buttons-group .buttonStyle:before {
+	background: transparent !important;
+	content: none !important;
+}
+
+
+
+.buttonStyle.active_btn .imgStyle{
+ background: #F5BB94 !important;
+ filter: brightness(1) invert(100%) !important;
+}
+
+
+
+.hideOptions {
+ position: absolute; top: -9999px; left: -9999px;
+}
+
+#vizOptions {
+  margin-top: 15px;
+}
+
+
+
+.leaflet {
+  background: transparent !important;
 }

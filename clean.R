@@ -5,13 +5,18 @@ library(jsonlite)
 #casosUrl <- "http://50.31.146.35/~wwwmonit/monitorCorrupcion/admin/api/reporte/vistasApi.php?flag=casos"
 # notasUrl <- "http://50.31.146.35/~wwwmonit/monitorCorrupcion/admin/api/reporte/vistasApi.php?flag=notas"
 # actoresUrl <- "http://50.31.146.35/~wwwmonit/monitorCorrupcion/admin/api/reporte/vistasApi.php?flag=actores"
-# casos <- fromJSON(casosUrl)
+#casos_tem <- fromJSON(casosUrl)
+#unique(casos_tem$caso_emblematico)
+#casos_tem <- casos_tem %>% filter(caso_emblematico == ' informe II 2016-2018')
+
+#casos_tem <- casos_tem %>% select(`id caso` = id_caso, latitud, longitud)
 # actores <- fromJSON(actoresUrl)
 casos <- read.xlsx("data/original/Base de datos limpia Hechos con actores.xlsx")
 casos <- casos[c(-1,-2),]
 names(casos) <- trimws(casos[1,])
 casos <- casos[-1,]
 
+#casos <- casos %>% inner_join(casos_tem)
 
 casos <- casos %>% unite("Delito", `Delito 1`:`Delito 7`, remove = F, sep = ". ")
 casos$Delito <- trimws(gsub("NA\\.|NA", "", casos$Delito))
@@ -76,18 +81,31 @@ casos <- casos %>%
     d
   }) %>% bind_rows()
 
+casos$departamento[casos$departamento == 'RIÑO'] <- 'NARIÑO'
+casos$departamento[casos$departamento == 'AMAZOS'] <- 'AMAZONAS'
+casos$departamento[casos$departamento == 'MAGDALE'] <- 'MAGDALENA'
+casos$departamento[casos$departamento == 'NORTE SANTANDER'] <- 'NORTE DE SANTANDER'
+casos$departamento[casos$departamento == 'VALLE'] <- 'VALLE DEL CAUCA'
+casos$departamento[casos$departamento == 'GUAJIRA'] <- 'LA GUAJIRA'
+casos$departamento[casos$departamento == 'CASARE'] <- 'CASANARE'
+casos$departamento[casos$departamento == 'BOGOTÁ, DISTRITO CAPITAL'] <- 'SANTAFE DE BOGOTA D.C'
+casos$departamento[casos$departamento == 'CUNDIMARCA'] <- 'CUNDINAMARCA'
+
+
+
+
 write_csv(casos, "app/data/clean/casos_agregadas_data.csv", na = "")
 
 
 # Notas 
 
 notas <- read.xlsx("data/original/notas.xlsx")
-
-casos_notas <- casos %>% select(id_caso)
+notas <- notas %>% distinct(id_nota, .keep_all = T) 
+#casos_notas <- casos %>% select(id_caso)
 notas$id_caso <- as.character(notas$id_caso)
 notas_casos <- casos_notas %>% left_join(notas)
 
-notas_casos <- notas_casos %>% select(id_caso, medio)
+notas_casos <- notas %>% select(id_caso, medio)
 write_csv(notas_casos, "app/data/clean/notas_all_data.csv")
 
 notas <- notas_casos %>%

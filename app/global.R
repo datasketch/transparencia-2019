@@ -1,8 +1,6 @@
-library(tidyverse)
 library(lfltmagic)
 library(hgchmagic)
 library(dsAppWidgets)
-
 
 actores <- read_csv("data/clean/casos_all_data.csv")
 casos <- read_csv("data/clean/casos_agregadas_data.csv")
@@ -21,18 +19,18 @@ caso <- function(id){
 
 
 # función de mapas
-map_c <- function(id){
-  
-  caso <- caso(id)
-  data2 <- data.frame(id = caso$departamento, num = 100)
-  
-  
-  p1 <- suppressWarnings(suppressMessages(  geomagic::gg_choropleth_GnmNum(data = data2, mapName = "col_departments") +
-                                              scale_fill_gradient(low = '#0095D4', high = '#0095D4') +scale_x_continuous(expand=c(0,0)) + scale_y_continuous(expand=c(0,0)) + 
-                                              guides(fill = FALSE))) + theme(plot.margin=unit(c(0,0,0,0),"mm"))  
-  
- p1
-}
+# map_c <- function(id){
+#   
+#   caso <- caso(id)
+#   data2 <- data.frame(id = caso$departamento, num = 100)
+#   
+#   
+#   p1 <- suppressWarnings(suppressMessages(  geomagic::gg_choropleth_GnmNum(data = data2, mapName = "col_departments") +
+#                                               scale_fill_gradient(low = '#0095D4', high = '#0095D4') +scale_x_continuous(expand=c(0,0)) + scale_y_continuous(expand=c(0,0)) + 
+#                                               guides(fill = FALSE))) + theme(plot.margin=unit(c(0,0,0,0),"mm"))  
+#   
+#  p1
+# }
 
 
 
@@ -62,15 +60,15 @@ getFicha <- function(id){
                    caso$hecho_de_corrupcion)
           )
       )),
-    div(id = "bodysty",
-        fluidRow(
-          column(12,
-                 HTML(paste0( '<center>',
-                              plotOutput("map_d", height = "250px", width = "250px"),
-                              '</center>'
-                 ))
-          )
-        )),
+    # div(id = "bodysty",
+    #     fluidRow(
+    #       # column(12,
+    #       #        HTML(paste0( '<center>',
+    #       #                     plotOutput("map_d", height = "250px", width = "250px"),
+    #       #                     '</center>'
+    #       #        ))
+    #       # )
+    #     )),
     div(id = "bodysty",
     fluidRow(
       div(class='col-sm-12', style = 'margin-left: 14%;margin-left: 14%;padding: 0%;display: block;
