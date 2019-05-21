@@ -97,7 +97,7 @@ shinyServer(function(input, output, session) {
   # Gráficos
   
   output$vizOptions <- renderUI({
-    charts <- c("barrash", "barras" ,"treemap", "map", "pie", "lines")
+    charts <- c("map", "barrash", "barras" ,"treemap", "pie", "lines")
     buttonImage(id = "last_chart", charts, charts, file = "icons/", format = "svg", classImg = "imgStyle")
   })
   
@@ -126,7 +126,7 @@ shinyServer(function(input, output, session) {
           dt <- dt %>% dplyr::gather("delitoxx", "delito", delito_1:delito_7) %>% dplyr::select(-delitoxx) %>% dplyr::drop_na(delito)
         }
       } else {
-        dt <- actores %>% dplyr::filter(actores$tipo_de_participacion == 'Actor involucrado')
+        dt <- actores %>% dplyr::filter(actores$tipo_participacion == 'Actor involucrado')
         dt <- dt[var_sel]
       }
     } else {
@@ -221,7 +221,7 @@ shinyServer(function(input, output, session) {
     opts_viz <- list(
       title = NULL,
       subtitle = NULL,
-      caption = "Fuente: Transparencia por Colombia (2017)",
+      caption = "<span style='font-size: 11px;margin-top: 2px; color:#000000'>Fuente: Monitor Ciudadano de la Corrupción</span>",
       horLabel = horLabel,
       verLabel = verLabel,
       labelWrap = 30,
@@ -284,8 +284,13 @@ shinyServer(function(input, output, session) {
     
     if (is.null(df) | nrow(df) == 0) return()  
     
-    var1 <- input$hcClicked$id
+    click_chart <- input$last_chart
     
+    if (click_chart == "map") {
+    var1 <- input$vizLflt_shape_click$id
+    } else {
+    var1 <- input$hcClicked$id
+    }
     if (is.null(var1)) return()
     
     var2 <- input$hcClicked$cat
@@ -321,8 +326,8 @@ shinyServer(function(input, output, session) {
     txt <- purrr::map(1:filas, function(x){
       div(class = "ficha",
           div(class = "cont_info",
-              HTML(paste0('<div class = "title_ficha">',info$`nombre_hecho_de_corrupcion_(publico)`[x], '</div>')),
-              HTML(paste0('<div class = "sub_ficha">',info$`subtitulo_hecho_de_corrupcion_(publico)`[x], '</div>'))),
+              HTML(paste0('<div class = "title_ficha">',info$nombre_publico[x], '</div>')),
+              HTML(paste0('<div class = "sub_ficha">',info$subtitulo_publico[x], '</div>'))),
           tags$button(id = info$id_caso[x], class = "click_ficha",  "Ver más")
       )
     })
@@ -330,18 +335,19 @@ shinyServer(function(input, output, session) {
   })
   
   
-  # output$blabl <- renderPrint({
-  #   input$viz_lflt_shape_click$id
-  # })
+  output$blabl <- renderPrint({
+    #input$vizLflt_shape_click$id
+    list(clicks$var1, clicks$var2, clicks$varMap)
+  })
   
-  output$viz_lflt <- renderLeaflet({
+  output$vizLflt <- renderLeaflet({
     dt_m <- data_viz() %>% select(-id_caso)
     if (names(dt_m)[1] == 'departamento') {
       dt <- dt_m %>% 
               dplyr::group_by(departamento) %>% 
                 dplyr::summarise(Total = n())
       print(dt)
-      lf <- lflt_choropleth_GnmNum(data = dt, mapName = "col_departments")
+      lf <- lflt_choropleth_GnmNum(data = dt, mapName = "col_departments", opts = list(scale = "continuous", zoom = 6, colors = c("#ffe566", "#fa8223"), caption = "Fuente: Monitor Ciudadano de la Corrupción"))
     } else {
       lf <- lflt_choropleth_GnmNum(mapName = "col_departments")    
     }
@@ -355,11 +361,12 @@ shinyServer(function(input, output, session) {
     click_chart <- input$last_chart
     if (is.null(click_chart)) return("Cargando...")
     if(click_chart == "map") {
-      h <- leafletOutput("viz_lflt", height = 550)
+      h <- list(leafletOutput("vizLflt", height = 550))
     } else {
-      h <- highchartOutput('viz_hgch', height = 550)
+      h <- highchartOutput('viz_hgch', height = 510)
     }
-    h
+    list(h,
+         verbatimTextOutput("blabl"))
   })
   
   output$map_d <- renderLeaflet({
@@ -371,7 +378,9 @@ shinyServer(function(input, output, session) {
   
   
   fichaInfo <- reactive({
+    
     id <- input$last_case
+  
     if(is.null(id)) return()
     getFicha(id)
   })

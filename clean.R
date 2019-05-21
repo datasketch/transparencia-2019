@@ -2,174 +2,53 @@ library(tidyverse)
 library(openxlsx)
 library(jsonlite)
 
-#casosUrl <- "http://50.31.146.35/~wwwmonit/monitorCorrupcion/admin/api/reporte/vistasApi.php?flag=casos"
-# notasUrl <- "http://50.31.146.35/~wwwmonit/monitorCorrupcion/admin/api/reporte/vistasApi.php?flag=notas"
-# actoresUrl <- "http://50.31.146.35/~wwwmonit/monitorCorrupcion/admin/api/reporte/vistasApi.php?flag=actores"
-#casos_tem <- fromJSON(casosUrl)
-#unique(casos_tem$caso_emblematico)
-#casos_tem <- casos_tem %>% filter(caso_emblematico == ' informe II 2016-2018')
-
-#casos_tem <- casos_tem %>% select(`id caso` = id_caso, latitud, longitud)
-# actores <- fromJSON(actoresUrl)
-casos <- read.xlsx("data/original/Base de datos limpia Hechos con actores.xlsx")
-casos <- casos[c(-1,-2),]
-names(casos) <- trimws(casos[1,])
-casos <- casos[-1,]
-
-#casos <- casos %>% inner_join(casos_tem)
-
-casos <- casos %>% unite("Delito", `Delito 1`:`Delito 7`, remove = F, sep = ". ")
-casos$Delito <- trimws(gsub("NA\\.|NA", "", casos$Delito))
-
-
-casos$new <- ifelse(casos$`Situación Judicial` == "No Aplica" | 
-                      casos$`Situación Judicial` == "Otros" |
-                      casos$`Situación Judicial` == "Absuelto" |
-                      casos$`Situación Judicial` == "Investigado" |
-                      casos$`Situación Judicial` == "No Disponible", NA, casos$Actor)
-
-
-
-
-names(casos) <- gsub("#", "Número de ", names(casos))
-names(casos)[names(casos) == "Sector_2"] <- "Sector Afectado"                     
-                  
-
-labelCasos <- iconv(tolower(gsub("[[:space:]]", "_",names(casos))), to='ASCII//TRANSLIT')
-labelCasos[labelCasos == "dinero_recuperado_y/o_multa_impuesta"] <- "dinero_recuperado"
-
-
-
-dic_casos <- data.frame(label = names(casos),
-                        id = labelCasos)
-
-names(casos) <- labelCasos
-casos <- Filter(function(z) !all(is.na(z)), casos)
-varInf <- data.frame(id  = names(casos))
-dic_casos <- varInf %>% left_join(dic_casos)
-
-library(datafringe)
-dic_casos$ctype <- getCtypes(casos)
+casosUrl <- "http://50.31.146.35/~wwwmonit/monitorCorrupcion/admin/api/reporte/vistasApi.php?flag=casos"
+casos <- fromJSON(casosUrl)
 casos <- map_df(casos, trimws)
+casos <- casos %>% plyr::rename(c("sector" = "sector_afectado",
+                                  "id_rango_dinero" = "rango_dinero",
+                                  "id_derecho_vulnerado" = "derecho_vulnerado"))
 
 
+casos$departamento[casos$departamento == "BOGOTÁ, DISTRITO CAPITAL"] <- "BOGOTA, D.C."
+casos$departamento[casos$departamento == "GUAJIRA"] <- "LA GUAJIRA"
+casos$departamento[casos$departamento == "NORTE SANTANDER"] <- "NORTE DE SANTANDER"
+casos$departamento[casos$departamento == "VALLE"] <- "VALLE DEL CAUCA"
 
-casos <- casos %>% 
-  map(function(z) {
-    d <- gsub("No aplica|no aplica", "No Aplica", z)
-    gsub("No disponible|no disponible", "No Disponible", d)
-  }) %>% bind_rows()
+# Territorios de concentración/consolidación
+
+territorio <- casos %>% 
+                filter(caso_emblematico == "Territorios de concentración/consolidación")
+
+# Informe II 2016-2018
+
+info <- casos %>% 
+          filter(caso_emblematico == "informe II 2016-2018")
 
 
-write_csv(casos, "app/data/clean/casos_all_data.csv", na = "")
-write_csv(dic_casos, "app/data/clean/casos_all_dic.csv",  na = "")
+info$derecho_vulnerado <- plyr::revalue(info$derecho_vulnerado,
+                                           c("1" = "Derechos sociales, económicos y culturales",
+                                             "2" = "Derechos fundamentales, civiles y políticos",
+                                             "3" = "Derechos colectivos y del medio ambiente", 
+                                             "4" = "No Aplica"))
+
+info$autoridad_politica <- plyr::revalue(info$autoridad_politica,
+                                         c("1" = "Sí",
+                                           "0" = "No"))
+
+
+write_csv(info, "app/data/clean/casos_all_data.csv")
 
 func_paste <- function(x) paste(unique(x), collapse = '. ')
 
-
-casos <- casos %>%
-           group_by(id_caso) %>%
-             summarise_each(funs(func_paste))
-
-casos <- casos %>%
-  map(function(z) {
-    d <- gsub("\\. NA|NA\\.|. NA|NA\\. |. NA|. NA", "", z)
-    d <- gsub(" No disponible|no disponible|No disponible|No aplica|\\. no aplica|no aplica|No Disponible|No Aplica|No Aplica\\.|No disponible\\.", "", d)
-    d <- gsub("\\.\\.|\\. \\.", ".", d)
-    d <- gsub("^\\.", "", d)
-    d <- trimws(gsub("NA", "", d))
-    d
-  }) %>% bind_rows()
-
-casos$departamento[casos$departamento == 'RIÑO'] <- 'NARIÑO'
-casos$departamento[casos$departamento == 'AMAZOS'] <- 'AMAZONAS'
-casos$departamento[casos$departamento == 'MAGDALE'] <- 'MAGDALENA'
-casos$departamento[casos$departamento == 'NORTE SANTANDER'] <- 'NORTE DE SANTANDER'
-casos$departamento[casos$departamento == 'VALLE'] <- 'VALLE DEL CAUCA'
-casos$departamento[casos$departamento == 'GUAJIRA'] <- 'LA GUAJIRA'
-casos$departamento[casos$departamento == 'CASARE'] <- 'CASANARE'
-casos$departamento[casos$departamento == 'BOGOTÁ, DISTRITO CAPITAL'] <- 'BOGOTÁ, D. C.'
-casos$departamento[casos$departamento == 'CUNDIMARCA'] <- 'CUNDINAMARCA'
+info <- info %>%
+  group_by(id_caso) %>%
+  summarise_each(funs(func_paste))
 
 
 
-
-write_csv(casos, "app/data/clean/casos_agregadas_data.csv", na = "")
-
-
-# Notas 
-
-notas <- read.xlsx("data/original/notas.xlsx")
-notas <- notas %>% distinct(id_nota, .keep_all = T) 
-#casos_notas <- casos %>% select(id_caso)
-notas$id_caso <- as.character(notas$id_caso)
-notas_casos <- casos_notas %>% left_join(notas)
-
-notas_casos <- notas %>% select(id_caso, medio)
-write_csv(notas_casos, "app/data/clean/notas_all_data.csv")
-
-notas <- notas_casos %>%
-          group_by(id_caso) %>%
-            summarise_each(funs(func_paste))
+write_csv(info, "app/data/clean/casos_agregadas_data.csv")
 
 
-# 
-# write_csv(casos, "app/data/clean/casos_agregadas_data.csv", na = "")
-# 
-# d <- read_csv("app/data/clean/casos_agregadas_data.csv", na = c('', NA, '.','ND'))
-# write_csv(d, "app/data/clean/casos_agregadas_data.csv", na = "")
-# 
-# 
-# # write_csv(dic_casos, "app/data/clean/casos_dic.csv", na = "")
-# 
-# 
-# # Limpieza casos ----------------------------------------------------------
-# # se toma la de la URL, verificar
-# # en esa al filtrar por territios de consolidación no hay id_derecho_vulnerado
-# # en la de Angela al filtrar NA en tipo de corrupcion quedan solo 327 filas
-# 
-# casos <- casos %>% 
-#             drop_na(tipo_corrupcion, nombrePublico)
-# 
-# 
-# unique(casos$caso_emblematico)
-# 
-# casos <- casos %>% filter(caso_emblematico == "informe II 2016-2018")
-# # casos <- casos %>%
-# #            dplyr::filter(caso_emblematico == "Territorios de concentración/consolidación")
-# 
-# var_all <- names(casos)
-# casos <- Filter(function(z) !all(is.na(z)), casos)
-# var_diff <- setdiff(var_all, names(casos))
-# # "dinero_recuperado"    "id_derecho_vulnerado" "forma_corrupcion"
-# 
-# unique(casos$nombre_actor)
-# 
-# casos$nombre_actor <- ifelse(casos$tipo_participacion == "Actor involucrado", casos$nombre_actor, NA)
-# length(casos$cargo)
-# casos$cargo <- ifelse(casos$tipo_participacion == "Actor involucrado", casos$cargo, NA)
-# casos$institucion <- ifelse(casos$tipo_participacion == "Actor involucrado", casos$institucion, '')
-# 
-# func_paste <- function(x) paste(unique(x), collapse = '. ')
-# 
-# casos <- casos %>%
-#           group_by(id_caso) %>%
-#            summarise_each(funs(func_paste))
-# 
-# casos <- casos %>% 
-#              map(function(z) {
-#               d <- gsub("\\. NA|NA\\.|. NA|NA\\. |. NA|. NA", "", z)
-#               d <- gsub(" No disponible|no disponible|No disponible|No aplica|\\. no aplica|no aplica|No Disponible|No Aplica|No Aplica\\.|No disponible\\.", "", d)
-#               d <- gsub("\\.\\.|\\. \\.", ".", d)
-#               d <- gsub("^\\.", "", d)
-#               d <- trimws(gsub("NA", "", d))
-#               d
-#              }) %>% bind_rows()
-# 
-# write_csv(casos, "app/data/clean/casos_data.csv", na = "")
-# casos <- read_csv("app/data/clean/casos_data.csv", na = c('', NA, '.','ND'))
-# write_csv(casos, "app/data/clean/casos_data.csv", na = "")
-# aa <- read_csv("app/data/clean/casos_data.csv")
-#write_csv(dic_casos, "app/data/clean/casos_dic.csv", na = "")
-# write_csv(casos, "data/clean/casos_data.csv", na = "")
-# write_csv(dic_casos, "data/clean/casos_dic.csv", na = "")
+# notasUrl <- "http://50.31.146.35/~wwwmonit/monitorCorrupcion/admin/api/reporte/vistasApi.php?flag=notas"
+# actoresUrl <- "http://50.31.146.35/~wwwmonit/monitorCorrupcion/admin/api/reporte/vistasApi.php?flag=actores"

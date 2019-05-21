@@ -290,7 +290,7 @@ label {
 #map_d {
   margin-top: -5% !important;
 }
-
+/*
 .leaflet-control-attribution a {
   display: none !important;
 }
@@ -298,7 +298,7 @@ label {
 .leaflet-control-zoom-in, .leaflet-control-zoom-out {
  display: none !important;
 }
-
+*/
 
 table{
 border-collapse:collapse; 
@@ -369,4 +369,6 @@ color: #0a446b;
   margin-top: 13px !important;
   text-align: center;
 }
+
+
 

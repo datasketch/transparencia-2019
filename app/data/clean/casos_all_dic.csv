@@ -1,68 +1,58 @@
-id,label,ctype
-numero,número,Num
-numero_de__actores,Número de  actores,Num
-numero_de_caso,Número de caso,Num
-id_caso,id caso,Num
-id_actor,id actor,Num
-actor_unico,Actor unico,Num
-hecho_de_corrupcion,Hecho de Corrupción,Cat
-nombre_hecho_de_corrupcion_(publico),Nombre Hecho de Corrupción (Público),Cat
-subtitulo_hecho_de_corrupcion_(publico),Subtítulo Hecho de Corrupción (Público),Cat
-resumen_del_hecho,Resumen del Hecho,Cat
-nacional,Nacional,Cat
-departamento,Departamento,Cat
-municipio,Municipio,Cat
-tipologia_ciudad,Tipología Ciudad,Cat
-region,Región,Cat
-orden,Orden,Cat
-sector_1,Sector_1,Cat
-sector_afectado,Sector Afectado,Cat
-mes_hecho,Mes Hecho,Cat
-ano_inicial_hecho,Año Inicial Hecho,Num
-ano_final_hecho,Año Final Hecho,Cat
-dinero_en_juego,Dinero en Juego,Cat
-dinero_apropiado,Dinero Apropiado,Cat
-dinero_recuperado,Dinero recuperado y/o multa impuesta,Cat
-rango_de_dinero,Rango de dinero,Cat
-derecho_vulnerado,Derecho Vulnerado,Cat
-tipo_corrupcion,Tipo Corrupción,Cat
-formas_de_corrupcion,Formas de Corrupción,Cat
-naturaleza_corrupcion,Naturaleza Corrupción,Cat
-caso_emblematico,Caso Emblemático,Cat
-situacion_judicial,Situación Judicial,Cat
-detalle_de_la_sancion,Detalle de la sanción,Cat
-tipo_de_investigacion,Tipo de Investigación,Cat
-etapa_procesal,Etapa Procesal,Cat
-entidad_de_conocimiento,Entidad de Conocimiento,Cat
-fecha_del_historial,Fecha del Historial,Cat
-tiempo_del_caso_(anos),Tiempo del caso (Años),Num
-conteo_prueba,conteo prueba,Num
-actor,Actor,Cat
-genero,Género,Cat
-tipo_de_participacion,Tipo de participación,Cat
-cod_tipo_de_participacion,cod_Tipo de participación,Num
-tipo_de_actor_indivual,Tipo de actor indivual,Cat
-subcategoria_1_actor_indivual,Subcategoría 1 actor indivual,Cat
-subcategoria_2_actor_indivual,Subcategoría 2 actor indivual,Cat
-tipo_de_actor_colectivo,Tipo de actor colectivo,Cat
-subcategoria_1_actor_colectivo,Subcategoría 1 actor colectivo,Cat
-subcategoria_2_actor_colectivo,Subcategoría 2 actor colectivo,Cat
-delito,Delito,Cat
-delito_1,Delito 1,Cat
-delito_2,Delito 2,Cat
-delito_3,Delito 3,Cat
-delito_4,Delito 4,Cat
-delito_5,Delito 5,Cat
-delito_6,Delito 6,Cat
-delito_7,Delito 7,Cat
-institucion,Institución,Cat
-tipo_institucion,Tipo Institución,Cat
-codigo_institucion,Código Institución,Num
-cargo,Cargo,Cat
-rango_periodo,Rango Periodo,Cat
-periodo_1,Periodo 1,Cat
-periodo_2,Periodo 2,Cat
-rama_del_poder_publico,Rama del poder Público,Cat
-autoridad_publica,Autoridad Pública,Cat
-partido_politico,Partido Político,Cat
-new,new,Cat
+id,label
+id_caso,Código del caso 
+nombre,Nombre del hecho 
+nombre_publico,Título público
+id_ciudad,id_ciudad
+id_departamento,id_departamento
+longitud,longitud
+latitud,latitud
+hecho,Resumen del hecho
+dinero_juego,Dinero en Juego
+dinero_apropiado,Dinero apropiado
+dinero_recuperado,Dinero recuperado
+id_caso_emblematico,id_caso_emblematico
+id_icono,id_icono
+id_usuario_creacion,id_usuario_creacion
+fecha_registro,fecha_registro
+fecha_informacion_actualizada,Fecha de actualización de información
+publico,publico
+activo,activo
+subtitulo_publico,Subtítulo del hecho
+no_disponible_dinero_juego,no_disponible_dinero_juego
+no_disponible_dinero_apropiado,no_disponible_dinero_apropiado
+no_disponible_dinero_recuperado,no_disponible_dinero_recuperado
+rango_dinero,Rango de dinero en juego
+derecho_vulnerado,Derecho Vulnerado
+nombrePublico,nombrePublico
+subtituloPublico,subtituloPublico
+id_actor,Código del actor 
+nombre_actor,Nombre del actor 
+tipo_participacion,Tipo de participación
+tipo_actor_individual,Tipo de actor individual
+tipo_actor_colectivo,Tipo de actor colectivo
+institucion,Nombre de la Institución
+cargo,Cargo del actor
+rama_poder_publico,Rama del Poder Público
+autoridad_politica,Autoridad Política
+partido,Partidos Políticos
+ciudad,Ciudad del Hecho
+ciudad_codigo_dane,ciudad_codigo_dane
+departamento,Departamento del hecho
+departamento_codigo_dane,departamento_codigo_dane
+sector_afectado,Sector Afectado
+mes_hecho,Mes del hecho
+ano_hecho,Año inicial del hecho
+ano_final_hecho,Año final del hecho
+dinamica_corrupcion,No se va a usar
+naturaleza_corrupcion,Ámbito de la gestión pública afectado
+tipo_corrupcion,Tipo de Corrupción
+medida_anticorrupcion,No se va a usar
+delito,Delito cometido
+forma_corrupcion,Formas de Corrupción
+caso_emblematico,Caso emblemático
+situacion_judicial,Estado del actor involucrado
+detalle_sancion,Detalle de la Sanción
+tipo_investigacion,Tipo de investigación
+tipo_etapa_procesal,Etapa Procesal
+nombre_actor_autoridad,nombre_actor_autoridad
+fecha_historial,Año de la sanción
