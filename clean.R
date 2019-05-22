@@ -10,6 +10,14 @@ casos <- casos %>% plyr::rename(c("sector" = "sector_afectado",
                                   "id_derecho_vulnerado" = "derecho_vulnerado"))
 
 
+casos$nombre_actor <- ifelse(casos$situacion_judicial == "Condenado penalmente" |
+                               casos$situacion_judicial == "Inhabilitado disciplinariamente" |
+                               casos$situacion_judicial == "Responsable fiscalmente" |
+                               casos$situacion_judicial == "Sanción Fiscal" |
+                               casos$situacion_judicial == "Suspendido disciplinariamente" |
+                               casos$situacion_judicial == "Sancionado disciplinariamente", casos$nombre_actor, NA)
+
+
 casos$departamento[casos$departamento == "BOGOTÁ, DISTRITO CAPITAL"] <- "BOGOTA, D.C."
 casos$departamento[casos$departamento == "GUAJIRA"] <- "LA GUAJIRA"
 casos$departamento[casos$departamento == "NORTE SANTANDER"] <- "NORTE DE SANTANDER"

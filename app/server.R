@@ -109,25 +109,31 @@ shinyServer(function(input, output, session) {
     if (l_o == "Basico") {
       q_sel <- input$last_click
       if (is.null(q_sel)) q_sel <- 'q1'
-      dt_bs <- basicos %>% dplyr::filter(id == q_sel)
+      
+          dt_bs <- basicos %>% dplyr::filter(id == q_sel)
       
       var_sel <- dt_bs$variable
       
-      if (var_sel == 'delito') var_sel <- paste0('delito_', 1:7)
       #if (input$last_chart == "map" & q_sel != 'q3') var_sel <- c(var_sel, 'departamento')
       
       var_sel <- c("id_caso", var_sel)
-      print(var_sel)
+      
+     
       if (dt_bs$base == 'notas') {
         dt <- notas
       } else if (dt_bs$base == 'casos') {
         dt <- casos[var_sel]
         if (dt_bs$variable == 'delito') {
-          dt <- dt %>% dplyr::gather("delitoxx", "delito", delito_1:delito_7) %>% dplyr::select(-delitoxx) %>% dplyr::drop_na(delito)
+          dt <- separate_rows(dt, delito, convert = TRUE, sep = ",")
+          dt$delito <- trimws(dt$delito)
         }
       } else {
         dt <- actores %>% dplyr::filter(actores$tipo_participacion == 'Actor involucrado')
         dt <- dt[var_sel]
+        if (q_sel == "q7" | q_sel == "q8") {
+          dt[var_sel][dt[var_sel] == "No Aplica"] <- NA
+          dt <- dt %>% drop_na()
+        }
       }
     } else {
       base <- input$base_sel
@@ -334,22 +340,28 @@ shinyServer(function(input, output, session) {
     txt
   })
   
-  
-  output$blabl <- renderPrint({
-    #input$vizLflt_shape_click$id
-    list(clicks$var1, clicks$var2, clicks$varMap)
+  output$blabla <- renderPrint({
+    input$vizLflt_marker_click
   })
   
   output$vizLflt <- renderLeaflet({
-    dt_m <- data_viz() %>% select(-id_caso)
-    if (names(dt_m)[1] == 'departamento') {
+    dt_m <- data_viz() 
+    if (names(dt_m)[2] == 'departamento') {
       dt <- dt_m %>% 
+             select(-id_caso) %>% 
               dplyr::group_by(departamento) %>% 
                 dplyr::summarise(Total = n())
-      print(dt)
       lf <- lflt_choropleth_GnmNum(data = dt, mapName = "col_departments", opts = list(scale = "continuous", zoom = 6, colors = c("#ffe566", "#fa8223"), caption = "Fuente: Monitor Ciudadano de la Corrupción"))
     } else {
-      lf <- lflt_choropleth_GnmNum(mapName = "col_departments")    
+      dt_cor <- casos %>% select(id_caso, longitud, latitud)
+      dt <- left_join(dt_m, dt_cor, by = "id_caso")
+      #dt$Total <- dt$total
+      dt <- dt[,c(-1)]
+      dt <- dt %>% group_by_all() %>% dplyr::summarise(total = n())
+      
+      #dt <- dt %>% group_by_() %>% summarise(Total = n())
+      print(dt)
+      lf <- lflt_bubbles_CatGlnGltNum(data = dt, mapName = "col_departments", opts = list(zoom = 6, count = T))    
     }
     
     lf
@@ -366,7 +378,7 @@ shinyServer(function(input, output, session) {
       h <- highchartOutput('viz_hgch', height = 510)
     }
     list(h,
-         verbatimTextOutput("blabl"))
+         verbatimTextOutput("blabla"))
   })
   
   output$map_d <- renderLeaflet({

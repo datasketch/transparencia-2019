@@ -58,8 +58,6 @@ body {
 #basicos{
  margin-top: 11px;
  max-width: 95%;
- max-height: 300px;
- overflow-y: auto;
 }
 
 .opciones_basicas,.opciones_avanzadas {
