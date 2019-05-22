@@ -108,7 +108,7 @@ shinyServer(function(input, output, session) {
     
     if (l_o == "Basico") {
       q_sel <- input$last_click
-      if (is.null(q_sel)) q_sel <- 'q1'
+      if (is.null(q_sel)) return()#q_sel <- 'q1'
       
           dt_bs <- basicos %>% dplyr::filter(id == q_sel)
       
@@ -171,7 +171,7 @@ shinyServer(function(input, output, session) {
     
     if (l_o == "Basico") {
       q_sel <- input$last_click
-      if (is.null(q_sel)) q_sel <- 'q1'
+      if (is.null(q_sel)) return()#q_sel <- 'q1'
       title <- basicos$titulos[basicos$id == q_sel]
     } else {
       q_sel <- input$var_principal
@@ -346,6 +346,7 @@ shinyServer(function(input, output, session) {
   
   output$vizLflt <- renderLeaflet({
     dt_m <- data_viz() 
+    
     if (names(dt_m)[2] == 'departamento') {
       dt <- dt_m %>% 
              select(-id_caso) %>% 
@@ -370,15 +371,16 @@ shinyServer(function(input, output, session) {
   
   
   output$viz_res <- renderUI({
+    
     click_chart <- input$last_chart
     if (is.null(click_chart)) return("Cargando...")
+    
     if(click_chart == "map") {
-      h <- list(leafletOutput("vizLflt", height = 550))
+      h <- leafletOutput("vizLflt", height = 550)
     } else {
       h <- highchartOutput('viz_hgch', height = 510)
     }
-    list(h,
-         verbatimTextOutput("blabla"))
+    h
   })
   
   output$map_d <- renderLeaflet({
@@ -429,20 +431,20 @@ shinyServer(function(input, output, session) {
           caso_i <- caso(id)
           params <- list(
             id = id,
-            title =  gsub("\"","'",caso_i$`nombre_hecho_de_corrupcion_(publico)`),
-            subtitle =  gsub("\"","'",caso_i$`subtitulo_hecho_de_corrupcion_(publico)`),
+            title =  gsub("\"","'",caso_i$nombre_publico),
+            subtitle =  gsub("\"","'",caso_i$subtitulo_publico),
             mapc = map_c(id),
-            abstract =  gsub("\"","'",caso_i$hecho_de_corrupcion),
-            lugar = paste0(toupper(caso_i$departamento), ifelse(is.na(caso_i$municipio), '', paste0(' - ', toupper(caso_i$municipio)))),
-            inicio = ifelse(is.na(caso_i$ano_inicial_hecho), 'No disponible', caso_i$ano_inicial_hecho),
-            actor = ifelse(is.na(caso_i$new), 'No disponible', caso_i$new),
+            abstract =  gsub("\"","'",caso_i$hecho),
+            lugar = toupper(caso_i$departamento),#, ifelse(is.na(caso_i$), '', paste0(' - ', toupper(caso_i$municipio)))),
+            inicio = ifelse(is.na(caso_i$ano_hecho), 'No disponible', caso_i$ano_hecho),
+            actor = ifelse(is.na(caso_i$nombre_actor), 'No disponible', caso_i$nombre_actor),
             tipo =  ifelse(is.na(caso_i$tipo_corrupcion), 'No disponible', caso_i$tipo_corrupcion),
-            delito = ifelse(is.na(caso_i$delito), '', caso_i$delito),
+            delito = ifelse(is.na(caso_i$derecho_vulnerado), '', caso_i$derecho_vulnerado),
             sector = toupper(caso_i$sector_afectado),
             # dinero =  as.character(ifelse(is.na(caso_i$dinero_juego), 'No disponible', paste0(' $',  format(caso_i$dinero_juego, nsmall= 0, big.mark=",")))),
-            entidad = ifelse(is.na(caso_i$institucion), '', caso_i$subcategoria_1_actor_indivual),
+            entidad = ifelse(is.na(caso_i$institucion), '', caso_i$institucion),
             estado = ifelse(is.na(caso_i$situacion_judicial), '', caso_i$situacion_judicial),
-            actualizacion = ifelse(is.na(caso_i$fecha_del_historial), '', as.character(caso_i$fecha_del_historial))
+            actualizacion = ifelse(is.na(caso_i$fecha_historial), '', as.character(caso_i$fecha_historial))
           )
           rmarkdown::render("temp_latex/untitle.Rmd",
                             #output_format = pdf_document(template="default.tex"),

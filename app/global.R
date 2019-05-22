@@ -57,15 +57,15 @@ getFicha <- function(id){
             paste0(img(src = 'logo.png', style = "width: 150px;float: right;"))
           ),
           column(12, 
-                 HTML('<div>',  paste0(div(id = "tdesg",(toupper(caso$`nombre_hecho_de_corrupcion_(publico)`))), 
-                                       div(id = "subdesg", (caso$`subtitulo_hecho_de_corrupcion_(publico)`)),'</div>','<br><br/>'
-                 )),
-                 leafletOutput("map_d", height = 210)
+                 HTML('<div>',  paste0(div(id = "tdesg",(toupper(caso$nombre_publico))), 
+                                       div(id = "subdesg", (caso$subtitulo_publico)),'</div>','<br><br/>'
+                 ))
           ))),
     fluidRow(
       div(id = "styhecho", 
-                   caso$hecho_de_corrupcion)
+                   caso$hecho)
       ),
+    leafletOutput("map_d", height = 210),
     div(id = "bodysty",
     fluidRow(
       div(class='col-sm-12', 
@@ -82,12 +82,12 @@ getFicha <- function(id){
                       div(id ="colone",'FECHA DE INICIO:' ),
                       '</td>',
                       '<td>', 
-                      div(id ="coltwo", ifelse(is.na(caso$ano_inicial_hecho), 'no disponible', caso$ano_inicial_hecho)),'</td>',
+                      div(id ="coltwo", ifelse(is.na(caso$ano_hecho), 'no disponible', caso$ano_hecho)),'</td>',
                       '</tr>',
                       '<tr>',
                       '<td>',div(id="colone",'ACTOR O ENTIDAD INVOLUCRADO:'), 
                       '</td>',
-                      '<td>', div(id="coltwo",ifelse(is.na(caso$new), 'No disponible', caso$new)), '</td>',
+                      '<td>', div(id="coltwo",ifelse(is.na(caso$nombre_actor), 'No disponible', caso$nombre_actor)), '</td>',
                       '</tr>',
                       '<td>', div(id="colone",'TIPO DE CORRUPCIÓN:'),
                       '</td>',
@@ -110,8 +110,8 @@ getFicha <- function(id){
                                          '</table>')),
                              HTML(paste0(    
                                '<td style="width: 34%;">',
-                               div(id="colone",'DELITO:'),'</td>',
-                               '<td>', div(id = "coltwo", ifelse(is.na(caso$delito), 'No disponible', caso$delito)),
+                               div(id="colone",'DERECHO VULNERADO:'),'</td>',
+                               '<td>', div(id = "coltwo", ifelse(is.na(caso$derecho_vulnerado), 'No disponible', caso$derecho_vulnerado)),
                                '</tr>',
                                '<td>',
                                div(id="colone", HTML('SECTOR AFECTADO:')),
@@ -124,7 +124,7 @@ getFicha <- function(id){
                       '<tr>',
                       '<td style="width: 50%;border-top: none;">', 
                       '<p id="colend"> ENTIDAD DE <br/> CONOCIMIENTO: </p>',
-                      '<p id = "colfib">', ifelse(is.na(caso$nombre_actor_autoridad), '', caso$nombre_actor_autoridad) , '</p>', '</td>',
+                      '<p id = "colfib">', ifelse(is.na(caso$institucion), '', caso$institucion) , '</p>', '</td>',
                       '<td style="width: 50%;border-top: none;">',
                       '<p id="colend"> ESTADO JUDICIAL: </p>',
                       '<p id = "colfib">', ifelse(is.na(caso$situacion_judicial), '', caso$situacion_judicial), '</p>', 

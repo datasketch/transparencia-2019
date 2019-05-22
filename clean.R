@@ -47,13 +47,15 @@ info$autoridad_politica <- plyr::revalue(info$autoridad_politica,
 
 write_csv(info, "app/data/clean/casos_all_data.csv")
 
+info$nombre_actor[is.na(info$nombre_actor)] <- "-"
+
 func_paste <- function(x) paste(unique(x), collapse = '. ')
 
 info <- info %>%
   group_by(id_caso) %>%
   summarise_each(funs(func_paste))
 
-
+info$nombre_actor <- gsub("-.|-", "", info$nombre_actor)
 
 write_csv(info, "app/data/clean/casos_agregadas_data.csv")
 

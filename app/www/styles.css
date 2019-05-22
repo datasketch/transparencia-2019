@@ -278,12 +278,14 @@ label {
   padding: 5% !important;
 }
 
-#tdesg {
+.tdesg {
+  font-size: 21px !important;
   font-weight: 700 !important;
   margin-bottom: 3px !important;
 }
 
-#subdesg {
+.subdesg {
+  font-size: 15px !important;
   color: #F48323 !important;
 }
 
@@ -367,7 +369,6 @@ color: #0a446b;
 
 #styhecho {
   margin-top: 13px !important;
-  text-align: center;
 }
 
 
