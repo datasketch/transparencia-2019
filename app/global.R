@@ -57,12 +57,12 @@ getFicha <- function(id){
             paste0(img(src = 'logo.png', style = "width: 150px;float: right;"))
           ),
           column(12, 
-                 HTML('<div>',  paste0(div(id = "tdesg",(toupper(caso$nombre_publico))), 
-                                       div(id = "subdesg", (caso$subtitulo_publico)),'</div>','<br><br/>'
+                 HTML( paste0(div(style = "font-size: 21px;font-weight: 700;margin-bottom: 3px;",(toupper(caso$nombre_publico))), 
+                              div(style = "font-size: 19px;font-weight: 700;color: #F48323;", (caso$subtitulo_publico))
                  ))
           ))),
     fluidRow(
-      div(id = "styhecho", 
+      div(style = "font-size: 15px;padding: 3%;", 
                    caso$hecho)
       ),
     leafletOutput("map_d", height = 210),
@@ -123,10 +123,10 @@ getFicha <- function(id){
                       '<table class="Fictable">',
                       '<tr>',
                       '<td style="width: 50%;border-top: none;">', 
-                      '<p id="colend"> ENTIDAD DE <br/> CONOCIMIENTO: </p>',
-                      '<p id = "colfib">', ifelse(is.na(caso$institucion), '', caso$institucion) , '</p>', '</td>',
+                      '<p id="colend" style = "font-weight: 600;"> ENTIDAD DE <br/> CONOCIMIENTO: </p>',
+                      '<p id = "colfib" >', ifelse(is.na(caso$institucion), '', caso$institucion) , '</p>', '</td>',
                       '<td style="width: 50%;border-top: none;">',
-                      '<p id="colend"> ESTADO JUDICIAL: </p>',
+                      '<p id="colend" style = "font-weight: 600;"> ESTADO JUDICIAL: </p>',
                       '<p id = "colfib">', ifelse(is.na(caso$situacion_judicial), '', caso$situacion_judicial), '</p>', 
                       '</td>',
                       '</tr>',

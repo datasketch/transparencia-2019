@@ -10,12 +10,32 @@ casos <- casos %>% plyr::rename(c("sector" = "sector_afectado",
                                   "id_derecho_vulnerado" = "derecho_vulnerado"))
 
 
+casos$rango_dinero <- plyr::revalue(casos$rango_dinero,
+                                         c("1" = "De 0 a 100 millones de pesos",
+                                           "2" = "De 101 a 500 millones de pesos",
+                                           "3" = "De 501 a 1000 millones de pesos", 
+                                           "4" = "De 1001 a 5000 millones de pesos",
+                                           "5" = "De 5001 a 10.000 millones de pesos",
+                                           "6" = "Más de 10.000",
+                                           "7" = "No aplica"))
+
+casos$derecho_vulnerado <- plyr::revalue(casos$derecho_vulnerado,
+                                        c("1" = "Derechos sociales, económicos y culturales",
+                                          "2" = "Derechos fundamentales, civiles y políticos",
+                                          "3" = "Derechos colectivos y del medio ambiente", 
+                                          "4" = "No Aplica"))
+
+casos$autoridad_politica <- plyr::revalue(casos$autoridad_politica,
+                                         c("1" = "Sí",
+                                           "0" = "No"))
+
+
 casos$nombre_actor <- ifelse(casos$situacion_judicial == "Condenado penalmente" |
                                casos$situacion_judicial == "Inhabilitado disciplinariamente" |
                                casos$situacion_judicial == "Responsable fiscalmente" |
                                casos$situacion_judicial == "Sanción Fiscal" |
                                casos$situacion_judicial == "Suspendido disciplinariamente" |
-                               casos$situacion_judicial == "Sancionado disciplinariamente", casos$nombre_actor, NA)
+                               casos$situacion_judicial == "Sancionado disciplinariamente", paste0(casos$nombre_actor, " (", casos$cargo, ")"), paste0("(", casos$cargo, ")"))
 
 
 casos$departamento[casos$departamento == "BOGOTÁ, DISTRITO CAPITAL"] <- "BOGOTA, D.C."
@@ -25,39 +45,25 @@ casos$departamento[casos$departamento == "VALLE"] <- "VALLE DEL CAUCA"
 
 # Territorios de concentración/consolidación
 
-territorio <- casos %>% 
-                filter(caso_emblematico == "Territorios de concentración/consolidación")
-
-# Informe II 2016-2018
-
-info <- casos %>% 
-          filter(caso_emblematico == "informe II 2016-2018")
+casos_app <- casos %>% 
+                filter(caso_emblematico %in% c("Territorios de concentración/consolidación", "informe II 2016-2018"))
 
 
-info$derecho_vulnerado <- plyr::revalue(info$derecho_vulnerado,
-                                           c("1" = "Derechos sociales, económicos y culturales",
-                                             "2" = "Derechos fundamentales, civiles y políticos",
-                                             "3" = "Derechos colectivos y del medio ambiente", 
-                                             "4" = "No Aplica"))
-
-info$autoridad_politica <- plyr::revalue(info$autoridad_politica,
-                                         c("1" = "Sí",
-                                           "0" = "No"))
 
 
-write_csv(info, "app/data/clean/casos_all_data.csv")
+write_csv(casos_app, "app/data/clean/casos_all_data.csv")
 
-info$nombre_actor[is.na(info$nombre_actor)] <- "-"
+casos_app$nombre_actor[is.na(casos_app$nombre_actor)] <- "-"
 
 func_paste <- function(x) paste(unique(x), collapse = '. ')
 
-info <- info %>%
+casos_app <- casos_app %>%
   group_by(id_caso) %>%
   summarise_each(funs(func_paste))
 
-info$nombre_actor <- gsub("-.|-", "", info$nombre_actor)
+casos_app$nombre_actor <- gsub("-.|-", "", casos_app$nombre_actor)
 
-write_csv(info, "app/data/clean/casos_agregadas_data.csv")
+write_csv(casos_app, "app/data/clean/casos_agregadas_data.csv")
 
 
 # notasUrl <- "http://50.31.146.35/~wwwmonit/monitorCorrupcion/admin/api/reporte/vistasApi.php?flag=notas"

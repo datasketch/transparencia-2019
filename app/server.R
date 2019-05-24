@@ -97,7 +97,7 @@ shinyServer(function(input, output, session) {
   # Gráficos
   
   output$vizOptions <- renderUI({
-    charts <- c("map", "barrash", "barras" ,"treemap", "pie", "lines")
+    charts <- c("map", "barrash", "barras" ,"bubbles", "pie", "lines")
     buttonImage(id = "last_chart", charts, charts, file = "icons/", format = "svg", classImg = "imgStyle")
   })
   
@@ -108,7 +108,7 @@ shinyServer(function(input, output, session) {
     
     if (l_o == "Basico") {
       q_sel <- input$last_click
-      if (is.null(q_sel)) return()#q_sel <- 'q1'
+      if (is.null(q_sel)) q_sel <- 'q1'
       
           dt_bs <- basicos %>% dplyr::filter(id == q_sel)
       
@@ -144,7 +144,7 @@ shinyServer(function(input, output, session) {
       if (is.null(var_cruce)) return()
       click_chart <- input$last_chart
       
-      if (click_chart == "pie" | click_chart == "treemap") var_cruce <- "none"
+      if (click_chart == "pie" | click_chart == "bubbles") var_cruce <- "none"
       
       
       if (base == "Hechos") {
@@ -171,7 +171,7 @@ shinyServer(function(input, output, session) {
     
     if (l_o == "Basico") {
       q_sel <- input$last_click
-      if (is.null(q_sel)) return()#q_sel <- 'q1'
+      if (is.null(q_sel)) q_sel <- 'q1'
       title <- basicos$titulos[basicos$id == q_sel]
     } else {
       q_sel <- input$var_principal
@@ -206,9 +206,11 @@ shinyServer(function(input, output, session) {
     df <- data_viz() %>% select(-id_caso)
     colSc <- 'no'
     colors <- c("#fdb731")
+    line_width <- 2
     
-    if (click_chart == 'pie' | click_chart == 'treemap') {
+    if (click_chart == 'pie' | click_chart == 'bubbles') {
       colSc <- 'discrete'
+      line_width <- 0
       colors <-  c("#3DB26F", "#FECA84", "#74D1F7", "#F75E64", "#8097A4", "#B70F7F", "#5D6AE9", "#53255E", "#BDCAD1")
     }
     
@@ -258,10 +260,12 @@ shinyServer(function(input, output, session) {
       startAtZero = TRUE,
       spline = FALSE,
       theme = tma(custom = list(stylesX_lineWidth = 0, 
+                                height = 570,
                                 colors = colors,
                                 font_family = "Raleway",
                                 font_size = '11px',
                                 font_color = '#000000',
+                                line_width = line_width,
                                 stylesTitleY_fontWeight = 'bold',
                                 stylesTitleX_fontWeight = 'bold'))
     )
@@ -362,7 +366,7 @@ shinyServer(function(input, output, session) {
       
       #dt <- dt %>% group_by_() %>% summarise(Total = n())
       print(dt)
-      lf <- lflt_bubbles_CatGlnGltNum(data = dt, mapName = "col_departments", opts = list(zoom = 6, count = T))    
+      lf <- lflt_bubbless_CatGlnGltNum(data = dt, mapName = "col_departments", opts = list(zoom = 6, count = T))    
     }
     
     lf
@@ -378,7 +382,7 @@ shinyServer(function(input, output, session) {
     if(click_chart == "map") {
       h <- leafletOutput("vizLflt", height = 550)
     } else {
-      h <- highchartOutput('viz_hgch', height = 510)
+      h <- highchartOutput('viz_hgch', height = 'auto')
     }
     h
   })
