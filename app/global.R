@@ -1,6 +1,8 @@
 library(lfltmagic)
 library(hgchmagic)
 library(dsAppWidgets)
+library(shinycustomloader)
+library(d3plus)
 
 actores <- read_csv("data/clean/casos_all_data.csv")
 casos <- read_csv("data/clean/casos_agregadas_data.csv")
@@ -11,7 +13,7 @@ dic_casos <- read_csv("data/clean/casos_all_dic.csv")
 basicos <- read_csv("data/aux/basicos.csv")
 avanzados <- read_csv("data/aux/avanzadas.csv")
 cruces <- read_csv("data/aux/cruces.csv")
-
+red <- read_csv("data/aux/red.csv")
 
 caso <- function(id){
   casos %>% dplyr::filter(id_caso == id) 
@@ -21,20 +23,21 @@ caso <- function(id){
 map_c <- function(id){
 
   opts_map = list(
-  defaultFill = "#dddddd",
-  naColor = "#CCCCCC",
-  tiles = NULL,
-  border_color = "#cccccc",
-  colors = c('#c250c2', '#c250c2'),
-  zoom = 4
+    border_color = "#CCCCCC",
+    border_width = 1,
+    null_color = "#dddddd",
+  legend_show = F,
+  map_navigation = F,
+  showText = F,
+  tooltip = list(headerFormat = NULL, pointFormat = "{point.name}"),
+  colors = c('#c250c2', '#c250c2')
   )
   caso <- caso(id)
   data2 <- data.frame(id = caso$departamento, num = 100)
 
 
   p1 <- suppressWarnings(suppressMessages( 
-    lflt_choropleth_GnmNum(data = data2, mapName = "col_departments", opts = opts_map)%>%
-      clearControls() 
+    hgch_map_choropleth_GnmNum(data = data2,opts = opts_map)
   ))
 
  p1
@@ -62,10 +65,10 @@ getFicha <- function(id){
                  ))
           ))),
     fluidRow(
-      div(style = "font-size: 15px;padding: 3%;", 
+      div(style = "font-size: 15px;padding: 3%;height: 230px; overflow: auto;", 
                    caso$hecho)
       ),
-    leafletOutput("map_d", height = 210),
+    highchartOutput("map_d", height = 210),
     div(id = "bodysty",
     fluidRow(
       div(class='col-sm-12', 
@@ -79,7 +82,7 @@ getFicha <- function(id){
                       '</tr>',
                       '<tr>',
                       '<td style="text-align: center;">',
-                      div(id ="colone",'FECHA DE INICIO:' ),
+                      div(id ="colone",'FECHA DEL HECHO:' ),
                       '</td>',
                       '<td>', 
                       div(id ="coltwo", ifelse(is.na(caso$ano_hecho), 'no disponible', caso$ano_hecho)),'</td>',

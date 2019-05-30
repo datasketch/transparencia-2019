@@ -1,6 +1,6 @@
 \documentclass[letterpaper]{article} 
 
-% \documentclass[$if(fontsize)$$fontsize$,$endif$$if(lang)$$lang$,$endif$$if(papersize)$$papersize$,$endif$$for(classoption)$$classoption$$sep$,$endfor$]{$documentclass$}
+% \documentclass[]{article}
 
 
 
@@ -12,36 +12,20 @@
 \usepackage{multirow}
 \usepackage{colortbl}
 
-$if(fontfamily)$
-  \usepackage[$for(fontfamilyoptions)$$fontfamilyoptions$$sep$,$endfor$]{$fontfamily$}
-$else$
     \usepackage{lmodern}
-$endif$
-  $if(linestretch)$
-  \usepackage{setspace}
-\setstretch{$linestretch$}
-$endif$
-  \usepackage{amssymb,amsmath}
+    \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
 \usepackage{fixltx2e} % provides \textsubscript
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
-\usepackage[$if(fontenc)$$fontenc$$else$T1$endif$]{fontenc}
+\usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 
 \usepackage{color}
 
 
 % pandoc syntax highlighting
-$if(highlighting-macros)$
-  $highlighting-macros$
-  $endif$
   
-  $if(tables)$
-  \usepackage{longtable,booktabs}
-% Fix footnotes in tables (requires footnote package)
-\IfFileExists{footnote.sty}{\usepackage{footnote}\makesavenoteenv{long table}}{}
-$endif$
-  
+    
 % graphix
 \usepackage{graphicx}
 \setkeys{Gin}{width=\linewidth,totalheight=\textheight,keepaspectratio}
@@ -89,41 +73,44 @@ $endif$
     &
     \vspace{10pt} 
 
-        $if(title)$
-        \begin{center}
+                \begin{center}
         \begin{ejbi-title}
-        $title$
+        Del contrato yo me encargo
         \end{ejbi-title}
         \end{center}
         %\bigskip
-        $endif$ 
-        $if(subtitle)$
-      \begin{center}
+                      \begin{center}
       \begin{ejbi-subtitle}
-      $subtitle$
+      Cargos a Alcalde de Solano (2012-2015) por irregularidades en contratos
+      de salud
       \end{ejbi-subtitle}
       \end{center}
       %}
       %\bigskip
-      $endif$ 
-  \end{tabular}
+        \end{tabular}
 %  \egroup
 \end{table}
 
 
-$if(abstract)$
 %\begin{abstract}
-\color{colT}{\justify{$abstract$}}
+\color{colT}{\justify{En 2014, Yecson Peña Ceballos, entonces secretario de Gobierno del
+municipio de Solano (Caquetá), junto con el entonces alcalde Eliseo
+Murillo Criollo (2012-2015) firmaron un contrato con la IPS privada
+Grupo Empresarial Viamad Ltda sin contar con las respectiva autorización
+por parte de la Secretaría de Salud del Caquetá. Además el secretario de
+Gobierno era el alcalde encargado en el momento de abrir la convocatoria
+para seleccionar a los contratistas. En enero de 2018 se le imputaron
+cargos al alcalde y al secretario por desconocer los principios de
+economía, responsabilidad y transparencia en la contratación pública,
+siendo esta una falta calificada como gravísima.}}
 %\end{abstract}
-$endif$
 
 
-$body$
+\vspace{0.5cm}
+
+\begin{center}\includegraphics[width=150px,height=150px]{built_report_files/figure-latex/unnamed-chunk-2-1} \end{center}
   
 
-$for(include-after)$
-$include-after$
-$endfor$
   
 \vspace{0.5cm}
 
@@ -131,22 +118,22 @@ $endfor$
   
 \begin{tabular}{m{3.4cm}m{3.6cm}}
  \begin{ejbi-colone}LUGAR DEL HECHO:\end{ejbi-colone}& 
- $if(lugar)$ \begin{ejbi-coltwo} $lugar$ \end{ejbi-coltwo}$endif$\\ 
+  \begin{ejbi-coltwo} CAQUETA \end{ejbi-coltwo}\\ 
  \colrul 
  \addlinespace
  \begin{ejbi-colone}FECHA DEL HECHO:\end{ejbi-colone} &
- $if(inicio)$ \begin{ejbi-coltwo} $inicio$ \end{ejbi-coltwo} $endif$  \\
+  \begin{ejbi-coltwo} 2014 \end{ejbi-coltwo}   \\
  \colrul 
  \addlinespace
  \specialcell[]{\begin{ejbi-colone}ACTOR O ENTIDAD\end{ejbi-colone} \\
  \addlinespace
  \begin{ejbi-colone}INVOLUCRADO: \end{ejbi-colone}}&
- $if(actor)$ \begin{ejbi-coltwo} $actor$ \end{ejbi-coltwo}$endif$ \\ 
+  \begin{ejbi-coltwo} (Alcalde (2012015)). (Secretario de Gobierno (2012015)) \end{ejbi-coltwo} \\ 
 \addlinespace\colrul
  \addlinespace
  \specialcell[]{\begin{ejbi-colone}TIPO DE \end{ejbi-colone}\\ 
  \begin{ejbi-colone}CORRUPCIÓN:\end{ejbi-colone}}&
- $if(tipo)$ \begin{ejbi-coltwo} $tipo$ \end{ejbi-coltwo}$endif$ \\
+  \begin{ejbi-coltwo} Corrupción Administrativa \end{ejbi-coltwo} \\
  \addlinespace \colrul
  \end{tabular}
 \end{minipage}%
@@ -154,12 +141,12 @@ $endfor$
 \begin{tabular}{@{}l@{}}
 
 \begin{tabular}{m{3.6cm}m{3.6cm}}
-$if(delito)$\begin{ejbi-colone}DERECHO VULNERADO\end{ejbi-colone} &
- \begin{ejbi-coltwo}$delito$\end{ejbi-coltwo}$endif$\\ 
+\begin{ejbi-colone}DERECHO VULNERADO\end{ejbi-colone} &
+ \begin{ejbi-coltwo}Derechos sociales, económicos y culturales\end{ejbi-coltwo}\\ 
 \colrul
 \addlinespace
 \begin{ejbi-colone}SECTOR AFECTADO\end{ejbi-colone} &
- $if(sector)$\begin{ejbi-colone}$sector$\end{ejbi-colone}$endif$\\ 
+ \begin{ejbi-colone}SALUD\end{ejbi-colone}\\ 
 \colrul
 \addlinespace
 \multicolumn{1}{c !{\color{colfich}\vline}}{{\begin{tabular}{@{}c@{}}
@@ -168,14 +155,14 @@ $if(delito)$\begin{ejbi-colone}DERECHO VULNERADO\end{ejbi-colone} &
  \begin{ejbi-colone}ENTIDAD DE\end{ejbi-colone}\\\addlinespace \begin{ejbi-colone}CONOCIMIENTO:\end{ejbi-colone}\end{tabular} }} & 
  \multicolumn{1}{c}{\begin{ejbi-colone}ESTADO JUDICIAL:\end{ejbi-colone}} 
  \\
- \multicolumn{1}{c !{\color{colfich}\vline}}{{$if(entidad)$\begin{ejbi-coltwo} \parbox[t]{3.4cm}{\begin{center}$entidad$\end{center}}\end{ejbi-coltwo}$endif$}}  & \multicolumn{1}{c}{$if(estado)$\begin{ejbi-coltwo}\parbox[t]{3.4cm}{\begin{center} $estado$\end{center}} \end{ejbi-coltwo}$endif$} \\ \arrayrulecolor{colfich}\hline
+ \multicolumn{1}{c !{\color{colfich}\vline}}{{\begin{ejbi-coltwo} \parbox[t]{3.4cm}{\begin{center}Alcaldía Municipal de Solano-Caquetá\end{center}}\end{ejbi-coltwo}}}  & \multicolumn{1}{c}{\begin{ejbi-coltwo}\parbox[t]{3.4cm}{\begin{center} Imputado\end{center}} \end{ejbi-coltwo}} \\ \arrayrulecolor{colfich}\hline
 \end{tabular}
 \end{tabular}
 
 \vspace{1cm}
 
 \begin{flushright}
-\textit{Última actualización $fecha$} 
+\textit{Última actualización 2018-01-11 05:00:00} 
 \end{flushright}
 
 \end{document}

@@ -38,11 +38,11 @@ casos$nombre_actor <- ifelse(casos$situacion_judicial == "Condenado penalmente" 
                                casos$situacion_judicial == "Sancionado disciplinariamente", paste0(casos$nombre_actor, " (", casos$cargo, ")"), paste0("(", casos$cargo, ")"))
 
 
-casos$departamento[casos$departamento == "BOGOTÁ, DISTRITO CAPITAL"] <- "BOGOTA, D.C."
+casos$departamento[casos$departamento == "BOGOTÁ, DISTRITO CAPITAL"] <- "BOGOTA"
 casos$departamento[casos$departamento == "GUAJIRA"] <- "LA GUAJIRA"
 casos$departamento[casos$departamento == "NORTE SANTANDER"] <- "NORTE DE SANTANDER"
 casos$departamento[casos$departamento == "VALLE"] <- "VALLE DEL CAUCA"
-
+casos$departamento[is.na(casos$departamento)] <- "NACIONAL"
 # Territorios de concentración/consolidación
 
 casos_app <- casos %>% 

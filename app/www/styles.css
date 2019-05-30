@@ -55,21 +55,29 @@ body {
   text-align: center;
 }
 
-#basicos{
+#base_opts{
  margin-top: 11px;
+}
+
+#basicos{
+ margin-top: 15px;
  max-width: 95%;
 }
 
-.opciones_basicas,.opciones_avanzadas {
+.opciones_basicas,.opciones_avanzadas,.opciones_red {
  display: grid;
- grid-gap: 10px; 
 }
+
 
 #Avanzada {
  margin-top: 15px;
 }
 
-#Basico,#Avanzada {
+#Red {
+ margin-top: 15px;
+}
+
+#Basico,#Avanzada,#Red {
  background: transparent;
  border: 0px !important;
  font-weight: 700;
@@ -88,9 +96,9 @@ body {
 }
 
 .preguntas_basicas {
- height: 290px;
+ height: 240px;
  margin-bottom: 17px;
- margin-top: 11px;
+ margin-top: 7px;
  overflow: overlay;
 }
 
@@ -123,7 +131,7 @@ body {
 
 
 
-#opts_a {
+#opts_a,#opts_r {
  display: inline-block;
  margin-right: 9px;
 }
@@ -138,7 +146,7 @@ body {
 
 .buttons-group {
  background: transparent !important;
- grid-gap: 15px !important; 
+ margin-bottom: 5% !important;
  grid-template-columns: repeat(3, 1fr) !important;
  padding: 0 !important;
 }
@@ -223,7 +231,7 @@ body {
 
 .indicacion{
   margin-top: 50%;
-  text-align: center;
+  text-align: justify;
 }
 
 
@@ -360,8 +368,15 @@ color: #0a446b;
   margin-top: 13px !important;
 }
 
-.map-caption {
-  font-size: 13px;
-  color: #000000 !importantl;
+
+.highcharts-anchor {
+  display: none !important;
 }
 
+
+
+element.style {
+}
+.selectize-control.multi .selectize-input > div {
+  background: #0a446b !important;
+}

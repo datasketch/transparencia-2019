@@ -23,20 +23,37 @@ $(document).on('click', '.click_option', function(){
   
   var avanzada = document.getElementById("cont_avanzada");
   var basicas = document.getElementById("cont_basicas");
+  var red = document.getElementById("cont_red");
   var flecha_adv = document.getElementById("opts_a");
   var flecha_bsc = document.getElementById("opts");
+  var flecha_red = document.getElementById("opts_r");
+  var graficos = document.getElementById("type_viz");
   
   
   if (id == 'Avanzada') {
     avanzada.classList.remove("hideOptions");
     basicas.classList.add("hideOptions");
+    graficos.classList.remove("hideOptions");
+    red.classList.add("hideOptions");
     flecha_adv.classList.add("active_opt");
+    flecha_red.classList.remove("active_opt");
     flecha_bsc.classList.remove("active_opt");
   } else if (id == 'Basico') {
     basicas.classList.remove("hideOptions");
     avanzada.classList.add("hideOptions");
+    graficos.classList.remove("hideOptions");
+    red.classList.add("hideOptions");
     flecha_adv.classList.remove("active_opt");
+    flecha_red.classList.remove("active_opt");
     flecha_bsc.classList.add("active_opt");
+  } else if (id == 'Red') {
+    red.classList.remove("hideOptions");
+    basicas.classList.add("hideOptions");
+    avanzada.classList.add("hideOptions");
+    graficos.classList.add("hideOptions");
+    flecha_adv.classList.remove("active_opt");
+    flecha_bsc.classList.remove("active_opt");
+    flecha_red.classList.add("active_opt");
   } else {
     return
   }
