@@ -4,18 +4,14 @@ Hechos,Año del hecho,ano_hecho
 Hechos,Tipo de Corrupción ,tipo_corrupcion
 Hechos,Naturaleza de Corrupción ,naturaleza_corrupcion
 Hechos,Delitos cometidos ,delito
-Hechos,Dinero en Juego ,dinero_juego
-Hechos,Dinero Apropiado,dinero_apropiado
 Hechos,Rango de Dinero ,rango_dinero
 Hechos,Derecho Vulnerado ,derecho_vulnerado
 Actores,Tipo de Participación ,tipo_participacion
 Actores,Cargo ,cargo
 Actores,Rama del Poder Público ,rama_poder_publico
-Actores,Autoridad Pública ,autoridad_publica
-Actores,Partido Político ,partido_politico
+Actores,Autoridad Política,autoridad_politica
+Actores,Partido Político ,partido
 Actores,Tipo de Investigación ,tipo_investigacion
-Actores,Etapa Procesal ,etapa_procesal
 Actores,Situación Judicial,situacion_judicial
-Actores,Detalle de la Sanción ,detalle_sancion
 Actores,Tipo de actor colectivo,tipo_actor_colectivo
 Actores,Tipo de actor individual,tipo_actor_individual

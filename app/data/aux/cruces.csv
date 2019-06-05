@@ -21,6 +21,6 @@ barras,rango_de_dinero,tipo_corrupcion,Tipo de Corrupción
 barras,derecho_vulnerado,departamento,Departamento
 barras,derecho_vulnerado,sector_afectado,Sector Afectado 
 barras,derecho_vulnerado,naturaleza_corrupcion,Naturaleza de Corrupción 
-barras,derecho_vulnerado,tipo_corrupcion,Tipo de Participación 
+barras,derecho_vulnerado,tipo_corrupcion,Tipo de Corrupción 
 lineas,,ano_hecho,Año Inicial Hecho
 lineas,,ano_final_hecho,Año Final Hecho

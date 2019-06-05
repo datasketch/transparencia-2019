@@ -22,12 +22,33 @@ body {
 	box-sizing: border-box;
 	color: #0a446b;
 	font-family: 'Raleway', sans-serif;
+	font-size: 13px;
 	height: 100%;
 	margin: 0;
 	width: 100%;
 	background: #f8f8f8;
 }
 
+
+@media only screen and (max-device-width: 600px) {
+.panels {
+    display: inline-block !important;
+}
+
+.preguntas_basicas {
+    height: 210px !important;
+    width: 100% !important;
+}
+
+#Avanzada, #Red {
+  display: none !important;
+}
+
+.indicacion{
+  display: none !important;
+}
+
+}
 
 .panels {
  display: grid;
@@ -68,6 +89,10 @@ body {
  display: grid;
 }
 
+
+canvas {
+    cursor: pointer !important;
+}
 
 #Avanzada {
  margin-top: 15px;
@@ -379,4 +404,14 @@ element.style {
 }
 .selectize-control.multi .selectize-input > div {
   background: #0a446b !important;
+}
+
+
+.info_red {
+  margin-top: 3%;
+}
+
+.shiny-options-group {
+  display: inline-flex !important;
+  width: 100%;
 }

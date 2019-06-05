@@ -45,6 +45,18 @@ casos$departamento[casos$departamento == "VALLE"] <- "VALLE DEL CAUCA"
 casos$departamento[is.na(casos$departamento)] <- "NACIONAL"
 # Territorios de concentración/consolidación
 
+casos$sector_afectado <- plyr::revalue(casos$sector_afectado,
+                                       c("Transporte" = "Infraestructura y Transporte",
+                                         "Seguridad" = "Seguridad y Defensa",
+                                         "Ciencia y tecnología" = "TICS, Ciencia y Tecnología")
+)
+
+
+
+
+
+
+
 casos_app <- casos %>% 
                 filter(caso_emblematico %in% c("Territorios de concentración/consolidación", "informe II 2016-2018"))
 
@@ -53,7 +65,7 @@ casos_app <- casos %>%
 
 write_csv(casos_app, "app/data/clean/casos_all_data.csv")
 
-casos_app$nombre_actor[is.na(casos_app$nombre_actor)] <- "-"
+casos_app$nombre_actor[is.na(casos_app$nombre_actor)] <- "*"
 
 func_paste <- function(x) paste(unique(x), collapse = '. ')
 
@@ -61,7 +73,7 @@ casos_app <- casos_app %>%
   group_by(id_caso) %>%
   summarise_each(funs(func_paste))
 
-casos_app$nombre_actor <- gsub("-.|-", "", casos_app$nombre_actor)
+casos_app$nombre_actor <- gsub("\\*.|\\*", "", casos_app$nombre_actor)
 
 write_csv(casos_app, "app/data/clean/casos_agregadas_data.csv")
 

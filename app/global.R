@@ -1,8 +1,7 @@
-library(lfltmagic)
 library(hgchmagic)
 library(dsAppWidgets)
 library(shinycustomloader)
-library(d3plus)
+library(visNetwork)
 
 actores <- read_csv("data/clean/casos_all_data.csv")
 casos <- read_csv("data/clean/casos_agregadas_data.csv")
