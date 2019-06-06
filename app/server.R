@@ -76,18 +76,10 @@ shinyServer(function(input, output, session) {
   })  
   
   observe({
-    dt_sel <- input$base_sel
-    if (is.null(dt_sel)) return()
-    if (dt_sel == 'Hechos') {
-      var <- 'sector_afectado' 
-    } else {
-      var <- NULL
-    }
     updateSelectizeInput(session, "var_principal",
-                         choices = outVar(), selected = var
-    )})
-  
-  
+                         choices = outVar())
+    })
+ 
   
   outCross <- reactive({
     viz_sel <- input$last_chart
@@ -118,8 +110,10 @@ shinyServer(function(input, output, session) {
   
   observe({
     updateSelectizeInput(session, "var_cruce",
-                         choices = outCross()
-    )})
+                         choices = outCross())
+    updateSelectizeInput(session, "var_principal",
+                         selected = input$var_principal)
+    })
   
   # Opciones avanzadas
   
@@ -473,14 +467,8 @@ shinyServer(function(input, output, session) {
     colors <- "#fdb731"
     colSc <- "no"
     
-    
-    if (ncol(df) >= 2) {
-      colSc <- "discrete"
-      colors <- c("#fdb731","#0a446b", "#137fc0", "#c250c2", "#fa8223", "#64c6f2", "#f49bf9", "#fc7e5b", "#ffe566", "#64f4c8", "#137fc0", "#c250c2", "#f03a47", "#fdb731", "#36c16f", "#022f40", "#691f6b", "#931c4d", "#fa8223", "#2b6d46")
-      myFunc <- JS("function(event) {Shiny.onInputChange('hcClicked',  {id:event.point.category.name, cat:this.name, timestamp: new Date().getTime()});}")
-    }
-    
-    if (click_chart == 'pie') {
+   
+   if (click_chart == 'pie' | click_chart == 'map') {
       colSc <- "discrete"
       colors <- c("#fdb731","#0a446b", "#137fc0", "#c250c2", "#fa8223", "#64c6f2", "#f49bf9", "#fc7e5b", "#ffe566", "#64f4c8", "#137fc0", "#c250c2", "#f03a47", "#fdb731", "#36c16f", "#022f40", "#691f6b", "#931c4d", "#fa8223", "#2b6d46")
     }
@@ -500,7 +488,13 @@ shinyServer(function(input, output, session) {
     myFunc <- JS("function(event) {Shiny.onInputChange('hcClicked',  {id:event.point.name, timestamp: new Date().getTime()});}")
     
     if (click_chart == 'line') myFunc <- JS("function(event) {Shiny.onInputChange('hcClicked',  {id:event.point.category.name, timestamp: new Date().getTime()});}")
-    
+   
+    if (sum(grep('Cat', getCtypes(df))) >= 3 & click_chart != 'line') {
+      colSc <- "discrete"
+      colors <- c("#fdb731","#0a446b", "#137fc0", "#c250c2", "#fa8223", "#64c6f2", "#f49bf9", "#fc7e5b", "#ffe566", "#64f4c8", "#137fc0", "#c250c2", "#f03a47", "#fdb731", "#36c16f", "#022f40", "#691f6b", "#931c4d", "#fa8223", "#2b6d46")
+      myFunc <- JS("function(event) {Shiny.onInputChange('hcClicked',  {id:event.point.category.name, cat:this.name, timestamp: new Date().getTime()});}")
+    }
+     
     nDg <- 0
     if (type_agg) nDg <- 2
     
@@ -563,7 +557,7 @@ shinyServer(function(input, output, session) {
       var1 <- input$hcClicked$id
       
       if (is.null(var1)) return()
-      
+      var1 <- gsub('<br/>', ' ', var1)
       if (sum(grepl("departamento", names(df))) == 1) {
         var1 <- toupper(iconv(input$hcClicked$id, to = "ASCII//TRANSLIT"))
         var1 <- ifelse(var1 == 'NARINO', 'NARIÑO', var1)
@@ -576,6 +570,7 @@ shinyServer(function(input, output, session) {
         var_sel <- names(df)[2]
         dta <- df[df[var_sel] == var1,]
       } else {
+        var2 <- gsub('<br/>', ' ', var2)
         var_sel_uno <- names(df)[2]
         var_sel_dos <- names(df)[3]
         dta <- df[df[var_sel_uno] == var2 & df[var_sel_dos] == var1,]
@@ -626,6 +621,10 @@ shinyServer(function(input, output, session) {
     if (is.null(info)) return(txt)
     if(nrow(info) == 0) txt <- txt
     
+    tx_tit <- input$hcClicked$id
+    if (is.null(tx_tit)) tx_tit <- input$hcClicked$cat
+    if (is.null(tx_tit)) return()
+    HTML(paste0('<span style="font-size:15px;">', tx_tit, '</span>'))
     
     filas <- nrow(info)
     if (filas == 0) return(txt)
@@ -669,7 +668,10 @@ shinyServer(function(input, output, session) {
             })
           }
       }
+    div(
+    tx_tit,
     txt
+    )
   })
   
   fichaInfo <- reactive({
@@ -761,6 +763,8 @@ shinyServer(function(input, output, session) {
     v
   })
   
+  
+  
   # Salida Panel Uno
   output$panel_1 <- renderUI({
     div(
@@ -790,7 +794,7 @@ shinyServer(function(input, output, session) {
   # Salida Panel Tres
   output$panel_3 <- renderUI({
     div(class = "tj_out",
-        HTML("<div class = 'title_panel'>HECHOS</div>"), 
+        HTML("<div class = 'title_panel'>HECHOS</div>"),
         div(class = "content_ficha_mini",
             uiOutput("ficha_peque")
         )

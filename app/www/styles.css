@@ -121,10 +121,10 @@ canvas {
 }
 
 .preguntas_basicas {
- height: 240px;
+ max-height: 240px;
  margin-bottom: 17px;
  margin-top: 7px;
- overflow: overlay;
+ overflow-y: scroll;
 }
 
 .btn-default {
@@ -293,7 +293,7 @@ label {
 
 
 .hideOptions {
- position: absolute; top: -9999px; left: -9999px;
+ display: none;
 }
 
 #vizOptions {
