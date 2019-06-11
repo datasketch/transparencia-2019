@@ -384,7 +384,9 @@ shinyServer(function(input, output, session) {
     l_o <- input$last_option 
     if (is.null(l_o)) l_o <- "Basico"
     if (l_o == "Basico") {
-      tx <- gsub("casos", "hechos", basicos$base)
+      q_sel <- input$last_click
+      if (is.null(q_sel)) q_sel <- 'q1'
+      tx <- gsub("casos", "hechos", basicos$base[basicos$id == q_sel])
     } else if (l_o == "Avanzada") {
       base_avz <- input$base_sel
       if (base_avz == 'Hechos') {
