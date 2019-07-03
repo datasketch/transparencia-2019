@@ -64,7 +64,7 @@ getFicha <- function(id){
                  ))
           ))),
     fluidRow(
-      div(style = "font-size: 15px;padding: 3%;height: 230px; overflow: auto;", 
+      div(style = "font-size: 15px;padding: 3%;height: 170px; overflow: auto;margin-bottom: 7%;", 
                    caso$hecho)
       ),
     highchartOutput("map_d", height = 210),

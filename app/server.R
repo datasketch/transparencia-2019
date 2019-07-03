@@ -234,8 +234,10 @@ shinyServer(function(input, output, session) {
     viz <- visNetwork(edges = edges(), nodes = nodes(), width = "100%") %>% 
       visInteraction(navigationButtons = TRUE) %>% 
       visEvents(
-        click = "function(nodes){
-                  Shiny.onInputChange('clickRed', nodes.nodes[0]);
+        click = "function(nodes) {
+        console.info('click')
+        console.info(nodes)
+        Shiny.onInputChange('clickRed', {nodes : nodes.nodes[0]});
         ;}"
       ) %>% 
       visPhysics(stabilization= FALSE)  
@@ -592,11 +594,14 @@ shinyServer(function(input, output, session) {
     }
     dt
   })
-  
+  output$bla <- renderPrint({
+    data_ficha()
+  })
   
   output$ficha_peque <- renderUI({
     info <- data_ficha()
     l_o <- input$last_option 
+    print(l_o)
     if (is.null(l_o)) l_o <- "Basico"
     if (l_o != "Red") {
       txt <- HTML(
@@ -623,57 +628,62 @@ shinyServer(function(input, output, session) {
     if (is.null(info)) return(txt)
     if(nrow(info) == 0) txt <- txt
     
-    tx_tit <- input$hcClicked$id
-    if (is.null(tx_tit)) tx_tit <- input$hcClicked$cat
-    if (is.null(tx_tit)) return()
-    HTML(paste0('<span style="font-size:15px;">', tx_tit, '</span>'))
+    
     
     filas <- nrow(info)
     if (filas == 0) return(txt)
+    print('hola')
     print(info)
     if (l_o != 'Red') {
-      txt <- purrr::map(1:filas, function(x){
+      tx_tit <- input$hcClicked$id
+      if (is.null(tx_tit)) tx_tit <- input$hcClicked$cat
+      if (is.null(tx_tit)) return()
+      HTML(paste0('<span style="font-size:15px;">', tx_tit, '</span>'))
+      txt <- div(
+      tx_tit,
+      purrr::map(1:filas, function(x){
         div(class = "ficha",
             div(class = "cont_info",
                 HTML(paste0('<div class = "title_ficha">',info$nombre_publico[x], '</div>')),
                 HTML(paste0('<div class = "sub_ficha">',info$subtitulo_publico[x], '</div>'))),
             tags$button(id = info$id_caso[x], class = "click_ficha",  "Ver más")
         )
-      }) } else {
-        click_red <- input$clickRed
-        if (is.null(click_red)) return()
-        click_red_mod <- gsub('c|a', '', click_red)
-        if(grepl('c', click_red)) {
+      })) } else {
+         click_red <- input$clickRed
+         print(click_red)
+      if (is.null(click_red)) return()
+      click_red_mod <- gsub('c|a', '', click_red)
+      if(grepl('c', click_red)) {
+        txt <- purrr::map(1:filas, function(x){
+          div(class = "ficha",
+              div(class = "cont_info",
+                  HTML(paste0('<div class = "title_ficha">',info$nombre_publico[x], '</div>')),
+                  HTML(paste0('<div class = "sub_ficha">',info$subtitulo_publico[x], '</div>')),
+                  HTML(paste0('<div class = "info_red"><b>Lugar del hecho:</b> ', info$departamento[x],
+                              '</br><b>Año del hecho:</b> ', info$ano_hecho[x],
+                              '</br><b>Tipo de corrupción:</b> ', info$tipo_corrupcion[x],
+                              '</br><b>Sector afectado:</b> ', info$sector_afectado[x],
+                              '</div>'))),
+              tags$button(id = info$id_caso[x], class = "click_ficha",  "Ver más")
+          )
+        })} else {
           txt <- purrr::map(1:filas, function(x){
             div(class = "ficha",
                 div(class = "cont_info",
-                    HTML(paste0('<div class = "title_ficha">',info$nombre_publico[x], '</div>')),
-                    HTML(paste0('<div class = "sub_ficha">',info$subtitulo_publico[x], '</div>')),
-                    HTML(paste0('<div class = "info_red"><b>Lugar del hecho:</b> ', info$departamento[x], 
-                                '</br><b>Año del hecho:</b> ', info$ano_hecho[x],
-                                '</br><b>Tipo de corrupción:</b> ', info$tipo_corrupcion[x],
-                                '</br><b>Sector afectado:</b> ', info$sector_afectado[x],
+                    HTML(paste0('<div class = "title_ficha">', info$nombre_actor[x], '</div>')),
+                    HTML(paste0('<div class = "info_red"><b>Tipo de investigación:</b> ', info$tipo_investigacion[x],
+                                '</br><b>Institución:</b> ', info$institucion[x],
+                                '</br><b>Situación judicial:</b> ', info$situacion_judicial[x],
                                 '</div>'))),
                 tags$button(id = info$id_caso[x], class = "click_ficha",  "Ver más")
             )
-          })} else {
-            txt <- purrr::map(1:filas, function(x){
-              div(class = "ficha",
-                  div(class = "cont_info",
-                      HTML(paste0('<div class = "title_ficha">', info$nombre_actor[x], '</div>')),
-                      HTML(paste0('<div class = "info_red"><b>Tipo de investigación:</b> ', info$tipo_investigacion[x], 
-                                  '</br><b>Institución:</b> ', info$institucion[x],
-                                  '</br><b>Situación judicial:</b> ', info$situacion_judicial[x],
-                                  '</div>'))),
-                  tags$button(id = info$id_caso[x], class = "click_ficha",  "Ver más")
-              )
-            })
-          }
+          })
+        }
       }
-    div(
-    tx_tit,
+   # div(
+    #tx_tit,
     txt
-    )
+    #)
   })
   
   fichaInfo <- reactive({
@@ -765,7 +775,7 @@ shinyServer(function(input, output, session) {
     v
   })
   
-  
+
   
   # Salida Panel Uno
   output$panel_1 <- renderUI({
@@ -798,6 +808,7 @@ shinyServer(function(input, output, session) {
     div(class = "tj_out",
         HTML("<div class = 'title_panel'>HECHOS</div>"),
         div(class = "content_ficha_mini",
+            #verbatimTextOutput('bla')
             uiOutput("ficha_peque")
         )
     )
